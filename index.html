@@ -39,7 +39,7 @@
 
       <!-- Khu vực xác thực Admin -->
       <div class="flex items-center space-x-2">
-        <!-- Nút cấu hình Database API của Google (Chỉ dành riêng cho Admin) -->
+        <!-- Nút cấu hình Database API của Google (Dành cho Admin) -->
         <button id="openApiConfigBtn" class="hidden flex items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 transition shadow-sm active:scale-95" title="Cấu hình Google Database API" onclick="openCloudConfigModal()">
           <i class="fa-solid fa-database text-xs"></i>
           <span class="hidden sm:inline">Cấu hình lưu trữ</span>
@@ -404,7 +404,7 @@
       </div>
       <div class="text-xs text-slate-600 space-y-2 mb-4 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
         <p class="font-semibold text-slate-800"><i class="fa-brands fa-google text-indigo-600 mr-1"></i> Đồng bộ dữ liệu chung giữa mọi thiết bị:</p>
-        <p>1. Mở <strong class="text-indigo-600">Google Apps Script</strong> &rarr; Dán mã script cơ sở dữ liệu đã hướng dẫn.</p>
+        <p>1. Mở <strong class="text-indigo-600">Google Apps Script</strong> &rarr; Tạo Database Web App.</p>
         <p>2. Triển khai dưới dạng Web App với quyền truy cập là <strong>Bất kỳ ai (Anyone)</strong>.</p>
         <p>3. Dán đường dẫn Web App kết thúc bằng <code class="bg-white px-1 py-0.5 rounded border text-indigo-700">/exec</code> vào ô bên dưới.</p>
       </div>
@@ -434,7 +434,14 @@
 
   <!-- JavaScript Logic Hoàn Chỉnh -->
   <script>
-    // --- Khởi tạo State & LocalStorage ---
+    // =========================================================================
+    // CẤU HÌNH LIÊN KẾT ĐÁM MÂY CỐ ĐỊNH CHO TẤT CẢ THIẾT BỊ (MÁY TÍNH / ĐIỆN THOẠI)
+    // Nếu bạn đã có link Web App Database từ Google Apps Script, hãy dán trực tiếp
+    // vào giữa 2 dấu ngoặc kép dưới đây (để bất kỳ ai mở web cũng thấy chung dữ liệu):
+    // =========================================================================
+    const DEFAULT_GLOBAL_API_URL = ""; 
+    // Ví dụ: const DEFAULT_GLOBAL_API_URL = "https://script.google.com/macros/s/AKfycb.../exec";
+
     const STORAGE_KEY_LINKS = 'portal_links_v2';
     const STORAGE_KEY_ADMIN = 'portal_admin_session';
     const STORAGE_KEY_PASS = 'portal_admin_pass';
@@ -445,7 +452,8 @@
       localStorage.setItem(STORAGE_KEY_PASS, '123456');
     }
 
-    let googleApiUrl = localStorage.getItem(STORAGE_KEY_GOOGLE_API) || '';
+    // Ưu tiên: Lấy URL lưu trong mã nguồn trước, sau đó mới tới localStorage
+    let googleApiUrl = DEFAULT_GLOBAL_API_URL || localStorage.getItem(STORAGE_KEY_GOOGLE_API) || '';
     let drives = JSON.parse(localStorage.getItem(STORAGE_KEY_DRIVES) || '[]');
     let links = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKS) || '[]');
     let currentCategory = 'all';
@@ -524,24 +532,26 @@
       }
     }
 
-    // Đồng bộ từ Cloud
+    // Đồng bộ từ Cloud (Đảm bảo mọi thiết bị đều đọc được)
     async function syncFromCloud() {
       if (!googleApiUrl) {
         if (syncIndicator) {
-          syncIndicator.innerHTML = '<i class="fa-solid fa-cloud text-[9px] mr-1"></i> Trực tuyến';
-          syncIndicator.className = 'inline-flex items-center text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full font-medium border border-slate-200';
+          syncIndicator.innerHTML = '<i class="fa-solid fa-cloud text-[9px] mr-1"></i> Chưa nối Cloud';
+          syncIndicator.className = 'inline-flex items-center text-[10px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full font-medium border border-amber-200';
         }
         return;
       }
 
       if (syncIndicator) {
-        syncIndicator.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin text-[9px] mr-1"></i> Đang nạp...';
+        syncIndicator.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin text-[9px] mr-1"></i> Đang tải...';
         syncIndicator.className = 'inline-flex items-center text-[10px] text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full font-semibold border border-sky-200';
       }
 
       try {
-        const response = await fetch(`${googleApiUrl}?action=getData&t=${Date.now()}`);
+        const fetchUrl = `${googleApiUrl}${googleApiUrl.includes('?') ? '&' : '?'}action=getData&_nocache=${Date.now()}`;
+        const response = await fetch(fetchUrl);
         const data = await response.json();
+        
         if (data && data.status === 'success') {
           if (Array.isArray(data.links)) {
             links = data.links;
@@ -559,7 +569,7 @@
             localStorage.setItem(STORAGE_KEY_PASS, data.adminPass);
           }
           if (syncIndicator) {
-            syncIndicator.innerHTML = '<i class="fa-solid fa-cloud text-[9px] mr-1"></i> Đã đồng bộ Google';
+            syncIndicator.innerHTML = '<i class="fa-solid fa-cloud text-[9px] mr-1"></i> Đã đồng bộ';
             syncIndicator.className = 'inline-flex items-center text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-semibold border border-emerald-200';
           }
         }
@@ -571,7 +581,7 @@
       }
     }
 
-    // Đẩy dữ liệu lên Cloud
+    // Đẩy dữ liệu lên Cloud (Dùng mode 'text/plain' để tránh lỗi CORS trên Google Script)
     async function pushToCloud(customMsg) {
       if (!googleApiUrl) return;
       if (syncIndicator) {
@@ -588,18 +598,22 @@
 
         const res = await fetch(googleApiUrl, {
           method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
           body: JSON.stringify(payload)
         });
+        
         const resData = await res.json();
         if (resData && resData.status === 'success') {
           if (syncIndicator) {
-            syncIndicator.innerHTML = '<i class="fa-solid fa-cloud text-[9px] mr-1"></i> Đã đồng bộ Google';
-            syncIndicator.className = 'inline-flex items-center text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-semibold border border-emerald-200 cursor-pointer';
+            syncIndicator.innerHTML = '<i class="fa-solid fa-cloud text-[9px] mr-1"></i> Đã đồng bộ';
+            syncIndicator.className = 'inline-flex items-center text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-semibold border border-emerald-200';
           }
           if (customMsg) showToast(customMsg);
         }
       } catch (err) {
-        console.warn('Lỗi đồng bộ:', err);
+        console.warn('Lỗi đồng bộ lên đám mây:', err);
       }
     }
 
@@ -749,7 +763,7 @@
         closeLinkModal();
         renderLinks();
         showToast('Đã thêm liên kết!');
-        pushToCloud('Đã đồng bộ liên kết lên Google!');
+        pushToCloud('Đã đồng bộ lên tất cả thiết bị!');
       });
     }
 
@@ -796,15 +810,15 @@
       }
       if (testBtn) testBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang kiểm tra...';
       try {
-        const res = await fetch(`${url}?action=getData&t=${Date.now()}`);
+        const res = await fetch(`${url}${url.includes('?') ? '&' : '?'}action=getData&_nocache=${Date.now()}`);
         const data = await res.json();
         if (data && data.status === 'success') {
           showToast('Kết nối Google API thành công rực rỡ!');
         } else {
-          showToast('URL phản hồi nhưng cấu trúc dữ liệu chưa đúng!');
+          showToast('URL phản hồi nhưng chưa đúng định dạng!');
         }
       } catch (err) {
-        showToast('Không thể kết nối! Kiểm tra lại quyền Deploy Web App.');
+        showToast('Không thể kết nối! Kiểm tra lại quyền Deploy Web App (Anyone).');
       } finally {
         if (testBtn) testBtn.innerHTML = '<i class="fa-solid fa-wifi mr-1"></i> Thử kết nối';
       }
@@ -1053,6 +1067,9 @@
 
           const res = await fetch(targetDrive.url, {
             method: 'POST',
+            headers: {
+              'Content-Type': 'text/plain;charset=utf-8'
+            },
             body: JSON.stringify(payload)
           });
           const result = await res.json();
@@ -1271,7 +1288,7 @@
     }
 
     // Tự động kiểm tra đồng bộ & thời hạn
-    setInterval(syncFromCloud, 15000);
+    setInterval(syncFromCloud, 10000);
     setInterval(renderLinks, 60000);
 
     // Khởi chạy khi nạp trang
