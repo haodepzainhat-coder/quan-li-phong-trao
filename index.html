@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cổng Thông Tin Hoạt Động & Quản Lý Liên Kết</title>
-  <!-- Tailwind CSS CDN -->
+  <title>Cổng Quản Lý Hoạt Động & Nộp Ảnh Trực Tuyến</title>
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,24 +14,25 @@
     body { font-family: 'Inter', sans-serif; }
     .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 9999px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
 
   <!-- Header -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm backdrop-blur-md bg-white/90">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm backdrop-blur-md bg-white/95">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
       <!-- Logo & Tiêu đề -->
       <div class="flex items-center space-x-3 cursor-pointer" onclick="switchCategory('all')">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-blue-500 flex items-center justify-center text-white shadow-md shadow-indigo-100">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-200">
           <i class="fa-solid fa-shapes text-lg"></i>
         </div>
         <div>
-          <h1 class="font-bold text-slate-900 text-lg leading-tight">Cổng Hoạt Động</h1>
+          <h1 class="font-bold text-slate-900 text-base sm:text-lg leading-tight tracking-tight">CỔNG HOẠT ĐỘNG TRỰC TUYẾN</h1>
           <p class="text-xs text-slate-500 font-medium flex items-center gap-1.5">
-            <span>Học tập • Phong trào • Tiện ích</span>
-            <span id="syncIndicator" class="inline-flex items-center text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full font-medium border border-slate-200">
-              <i class="fa-solid fa-cloud text-[9px] mr-1"></i> Trực tuyến
+            <span>Quản lý liên kết & Nộp ảnh</span>
+            <span id="syncIndicator" class="inline-flex items-center text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-semibold border border-emerald-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse"></span> Sẵn sàng hoạt động
             </span>
           </p>
         </div>
@@ -40,26 +41,26 @@
       <!-- Khu vực xác thực Admin -->
       <div class="flex items-center space-x-2">
         <!-- Nút cấu hình Database API của Google (Dành cho Admin) -->
-        <button id="openApiConfigBtn" class="hidden flex items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 transition shadow-sm active:scale-95" title="Cấu hình Google Database API" onclick="openCloudConfigModal()">
+        <button id="openApiConfigBtn" class="hidden items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 transition shadow-sm active:scale-95" title="Cấu hình Google Database API" onclick="openCloudConfigModal()">
           <i class="fa-solid fa-database text-xs"></i>
           <span class="hidden sm:inline">Cấu hình lưu trữ</span>
         </button>
 
         <!-- Nút khi chưa đăng nhập (Khách) -->
-        <button id="openLoginBtn" class="flex items-center space-x-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition shadow-sm active:scale-95">
+        <button id="openLoginBtn" onclick="openLoginModal()" class="flex items-center space-x-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition shadow-sm active:scale-95">
           <i class="fa-solid fa-lock text-slate-400"></i>
           <span>Admin</span>
         </button>
 
         <!-- Trạng thái khi đã đăng nhập (Admin) -->
-        <div id="adminBadgeGroup" class="hidden flex items-center space-x-1.5">
+        <div id="adminBadgeGroup" class="hidden items-center space-x-1.5">
           <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span> Admin
           </span>
-          <button id="openChangePassBtn" class="text-slate-500 hover:text-indigo-600 p-2 rounded-xl hover:bg-slate-100 transition" title="Đổi mật khẩu">
+          <button onclick="openChangePassModal()" class="text-slate-500 hover:text-blue-600 p-2 rounded-xl hover:bg-slate-100 transition" title="Đổi mật khẩu">
             <i class="fa-solid fa-key text-xs"></i>
           </button>
-          <button id="logoutBtn" class="text-slate-500 hover:text-rose-600 p-2 rounded-xl hover:bg-slate-100 transition" title="Đăng xuất">
+          <button onclick="logoutAdmin()" class="text-slate-500 hover:text-rose-600 p-2 rounded-xl hover:bg-slate-100 transition" title="Đăng xuất">
             <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
           </button>
         </div>
@@ -67,22 +68,28 @@
     </div>
   </header>
 
+  <!-- Banner hướng dẫn -->
+  <div class="bg-blue-50 border-b border-blue-100 px-4 py-2 text-center text-xs text-blue-700 flex items-center justify-center gap-2">
+    <i class="fa-solid fa-circle-info text-blue-500"></i>
+    <span>Mật khẩu Admin thử nghiệm: <strong class="underline">123456</strong>. Admin có toàn quyền Thêm, Sửa, Xóa link và Đề mục lưu trữ.</span>
+  </div>
+
   <!-- Main Content Container -->
-  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 w-full">
     
     <!-- Thanh điều khiển: Tabs danh mục & Nút Thêm (Dành cho Admin) -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
       
-      <!-- Bộ lọc 3 mục + Nộp ảnh -->
+      <!-- Bộ lọc 3 mục + Tab Nộp ảnh -->
       <div class="flex items-center overflow-x-auto pb-2 sm:pb-0 gap-2 custom-scrollbar" id="categoryNav">
-        <button onclick="switchCategory('all')" data-cat="all" class="cat-btn px-4 py-2 text-sm font-semibold rounded-xl transition shadow-sm flex items-center space-x-2 bg-indigo-600 text-white">
+        <button onclick="switchCategory('all')" data-cat="all" class="cat-btn px-4 py-2 text-sm font-semibold rounded-xl transition shadow-sm flex items-center space-x-2 bg-blue-600 text-white">
           <i class="fa-solid fa-layer-group text-xs"></i>
           <span>Tất cả</span>
           <span id="badge-all" class="text-[11px] bg-white/20 px-1.5 py-0.5 rounded-full ml-1">0</span>
         </button>
 
         <button onclick="switchCategory('hoctap')" data-cat="hoctap" class="cat-btn px-4 py-2 text-sm font-semibold rounded-xl transition shadow-sm flex items-center space-x-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50">
-          <i class="fa-solid fa-graduation-cap text-indigo-500 text-xs"></i>
+          <i class="fa-solid fa-graduation-cap text-blue-500 text-xs"></i>
           <span>Học tập</span>
           <span id="badge-hoctap" class="text-[11px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-full ml-1">0</span>
         </button>
@@ -99,16 +106,16 @@
           <span id="badge-khac" class="text-[11px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-full ml-1">0</span>
         </button>
 
-        <!-- Tab Nộp Ảnh Mới -->
+        <!-- Tab Nộp Ảnh -->
         <button onclick="switchCategory('nopanh')" data-cat="nopanh" class="cat-btn px-4 py-2 text-sm font-semibold rounded-xl transition shadow-sm flex items-center space-x-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50">
           <i class="fa-solid fa-cloud-arrow-up text-sky-500 text-xs"></i>
-          <span>Nộp ảnh</span>
+          <span>Nộp ảnh Drive</span>
         </button>
       </div>
 
-      <!-- Nút Thêm Hoạt Động (Chỉ hiển thị khi là Admin và đang ở tab liên kết) -->
-      <div id="adminActionSection" class="hidden shrink-0">
-        <button id="openAddModalBtn" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-sm hover:shadow transition active:scale-95">
+      <!-- Nút Thao Tác Của Admin -->
+      <div id="adminActionSection" class="hidden shrink-0 flex items-center space-x-2">
+        <button onclick="openLinkModal()" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-sm hover:shadow transition active:scale-95">
           <i class="fa-solid fa-plus text-xs"></i>
           <span>Thêm hoạt động</span>
         </button>
@@ -127,8 +134,8 @@
           <i class="fa-solid fa-folder-open"></i>
         </div>
         <h3 class="text-base font-semibold text-slate-800 mb-1">Chưa có liên kết nào</h3>
-        <p class="text-sm text-slate-500 max-w-sm mx-auto mb-5">Danh sách hiện đang trống. Hãy quay lại sau hoặc đăng nhập tài khoản quản trị để thêm nội dung mới.</p>
-        <button onclick="openLoginModal()" id="emptyLoginBtn" class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition">
+        <p class="text-sm text-slate-500 max-w-sm mx-auto mb-5">Mục này hiện đang trống. Hãy đăng nhập tài khoản Quản trị viên để thêm nội dung mới.</p>
+        <button onclick="openLoginModal()" class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition">
           <i class="fa-solid fa-lock text-xs"></i>
           <span>Đăng nhập Admin để thêm</span>
         </button>
@@ -139,106 +146,124 @@
     <div id="uploadViewContainer" class="hidden max-w-2xl mx-auto space-y-6">
 
       <!-- KHU VỰC QUẢN LÝ ĐỀ MỤC LƯU TRỮ (CHỈ HIỂN THỊ CHO ADMIN) -->
-      <div id="adminFolderManagementCard" class="hidden bg-white border border-indigo-100 rounded-2xl p-5 shadow-sm">
-        <div class="flex items-center justify-between mb-3">
-          <div class="flex items-center space-x-2">
-            <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm">
+      <div id="adminFolderManagementCard" class="hidden bg-white border border-blue-200 rounded-2xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+          <div class="flex items-center space-x-2.5">
+            <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">
               <i class="fa-solid fa-folder-tree"></i>
             </span>
             <div>
               <h3 class="font-bold text-slate-900 text-sm">Quản lý Đề mục lưu trữ Google Drive</h3>
-              <p class="text-[11px] text-slate-500">Chỉ Admin mới có quyền tạo hoặc chỉnh sửa đề mục.</p>
+              <p class="text-[11px] text-slate-500">Admin có thể thêm, đổi tên hoặc xóa các thư mục lưu trữ ảnh</p>
             </div>
           </div>
-          <button id="toggleCreateFolderBtn" class="text-xs font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition flex items-center gap-1">
+          <button onclick="openCreateFolderForm()" class="text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700 px-3 py-1.5 rounded-lg transition flex items-center gap-1 shadow-sm">
             <i class="fa-solid fa-plus"></i> Tạo đề mục mới
           </button>
         </div>
 
         <!-- Form tạo / chỉnh sửa đề mục -->
-        <form id="createFolderForm" class="hidden bg-slate-50 p-4 rounded-xl border border-slate-200 mb-4 space-y-3">
+        <form id="createFolderForm" onsubmit="handleSaveFolder(event)" class="hidden bg-slate-50 p-4 rounded-xl border border-slate-200 mb-4 space-y-3">
           <input type="hidden" id="editingFolderId" value="">
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1">Tên đề mục lưu trữ <span class="text-rose-500">*</span></label>
-            <input type="text" id="newFolderName" required placeholder="Ví dụ: Nộp minh chứng Đoàn Hội, Nộp bài thi Học kỳ..." class="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <input type="text" id="newFolderName" required placeholder="Ví dụ: Minh chứng Đoàn Hội, Nộp ảnh Đại hội TDTT..." class="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1">Đường dẫn Google Apps Script Web App của Drive này <span class="text-rose-500">*</span></label>
-            <input type="url" id="newFolderUrl" required placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+            <input type="url" id="newFolderUrl" required placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
           </div>
           <div class="flex justify-end space-x-2 pt-1">
-            <button type="button" id="cancelFolderBtn" class="px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-200 rounded-lg">Hủy</button>
-            <button type="submit" id="saveFolderSubmitBtn" class="px-3 py-1.5 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm">Lưu đề mục</button>
+            <button type="button" onclick="closeCreateFolderForm()" class="px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-200 rounded-lg">Hủy</button>
+            <button type="submit" class="px-3.5 py-1.5 text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm">Lưu đề mục</button>
           </div>
         </form>
 
-        <!-- Danh sách các đề mục hiện có -->
-        <div id="adminFolderList" class="space-y-2">
+        <!-- Danh sách các đề mục hiện có cho Admin -->
+        <div id="adminFolderList" class="space-y-2.5">
           <!-- Render bằng JS -->
         </div>
       </div>
 
       <!-- FORM NỘP ẢNH DÀNH CHO TẤT CẢ MỌI NGƯỜI (HỌC SINH / THÀNH VIÊN) -->
-      <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 sm:p-8">
-        <div class="text-center mb-6">
-          <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center mx-auto mb-2 text-xl shadow-inner">
+      <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 sm:p-8 space-y-6">
+        <div class="text-center pb-2 border-b border-slate-100">
+          <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-2 text-xl shadow-inner">
             <i class="fa-solid fa-cloud-arrow-up"></i>
           </div>
-          <h2 class="text-lg font-bold text-slate-900">Nộp Minh Chứng & Ảnh Hoạt Động</h2>
-          <p class="text-xs text-slate-500 mt-1">Ảnh sẽ được lưu tự động và trực tiếp vào Google Drive tương ứng.</p>
+          <h2 class="text-lg font-bold text-slate-900">CỔNG NỘP ẢNH & MINH CHỨNG</h2>
+          <p class="text-xs text-slate-500 mt-1">Ảnh sẽ được nén tối ưu và gửi thẳng vào Google Drive tương ứng.</p>
         </div>
 
-        <form id="uploadForm" class="space-y-5">
-          <!-- Họ và tên người gửi -->
+        <form id="uploadForm" onsubmit="handleUploadSubmit(event)" class="space-y-5">
+          
+          <!-- 1. Họ và tên người gửi -->
           <div>
             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              Họ và tên người gửi <span class="text-rose-500">*</span>
+              1. Họ và tên người nộp <span class="text-rose-500">*</span>
             </label>
             <div class="relative">
               <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
                 <i class="fa-regular fa-user text-xs"></i>
               </span>
-              <input type="text" id="uploaderName" required placeholder="Nhập họ và tên của bạn..." class="w-full pl-9 pr-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+              <input type="text" id="uploaderName" required placeholder="Nhập đầy đủ họ và tên của bạn..." class="w-full pl-9 pr-3 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
             </div>
           </div>
 
-          <!-- Lựa chọn Đề mục lưu trữ -->
-          <div>
+          <!-- 2. LỰA CHỌN ĐỀ MỤC LƯU TRỮ (1 DÒNG CHỌN TIỆN LỢI & DANH SÁCH RÕ ĐẸP) -->
+          <div class="relative">
             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              Chọn đề mục lưu trữ <span class="text-rose-500">*</span>
+              2. Chọn đề mục lưu trữ ảnh <span class="text-rose-500">*</span>
             </label>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                <i class="fa-solid fa-folder-open text-xs"></i>
-              </span>
-              <select id="driveSelect" required class="w-full pl-9 pr-8 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none transition">
-                <option value="">-- Vui lòng chọn đề mục cần nộp --</option>
-              </select>
-              <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
-                <i class="fa-solid fa-chevron-down text-xs"></i>
-              </span>
+            
+            <!-- Ô bấm 1 dòng duy nhất -->
+            <button type="button" id="folderDropdownToggle" onclick="toggleFolderDropdown()" class="w-full flex items-center justify-between p-3 bg-slate-50 hover:bg-white border-2 border-slate-200 hover:border-blue-400 rounded-xl transition text-left focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <div class="flex items-center space-x-3 overflow-hidden">
+                <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                  <i class="fa-solid fa-folder-closed text-base"></i>
+                </div>
+                <div class="truncate">
+                  <span id="selectedFolderDisplay" class="block text-xs sm:text-sm font-bold text-slate-800 truncate">-- Vui lòng chọn đề mục lưu trữ --</span>
+                  <span id="selectedFolderSubtitle" class="block text-[11px] text-slate-400 truncate">Nhấp để mở danh sách lựa chọn</span>
+                </div>
+              </div>
+              <div class="text-slate-400 shrink-0 ml-2">
+                <i id="folderDropdownArrow" class="fa-solid fa-chevron-down transition-transform duration-200 text-xs"></i>
+              </div>
+            </button>
+
+            <!-- Danh sách Popup thả xuống rõ ràng và thẩm mỹ -->
+            <div id="folderDropdownMenu" class="hidden absolute z-20 left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 max-h-72 overflow-y-auto custom-scrollbar">
+              <div id="folderDropdownItems" class="space-y-1">
+                <!-- Render các mục lựa chọn bằng JS -->
+              </div>
             </div>
-            <p id="noDrivesNotice" class="hidden text-[11px] text-amber-600 mt-1.5">
+
+            <!-- Input ẩn chứa link Drive đã chọn -->
+            <input type="hidden" id="selectedFolderUrl" value="">
+            <input type="hidden" id="selectedFolderName" value="">
+
+            <p id="noDrivesNotice" class="hidden text-xs text-amber-600 bg-amber-50 p-3 rounded-xl border border-amber-200 text-center mt-2">
               <i class="fa-solid fa-triangle-exclamation mr-1"></i> Hiện chưa có đề mục nào được tạo. Vui lòng liên hệ Admin!
             </p>
           </div>
 
-          <!-- Khu vực kéo thả / Chọn ảnh tối ưu cho cả máy tính, Android và iPhone -->
+          <!-- 3. Khu vực kéo thả / Chọn ảnh tối ưu cho cả máy tính, Android và iPhone -->
           <div>
             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              Hình ảnh cần nộp <span class="text-rose-500">*</span>
+              3. Hình ảnh cần nộp <span class="text-rose-500">*</span>
             </label>
             
-            <div id="dropZone" onclick="triggerFileInput()" class="relative border-2 border-dashed border-slate-300 hover:border-indigo-400 bg-slate-50 hover:bg-slate-100/70 rounded-2xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center">
-              <input type="file" id="imageInput" accept="image/*" class="hidden">
+            <div id="dropZone" onclick="triggerFileInput()" class="relative border-2 border-dashed border-slate-300 hover:border-blue-400 bg-slate-50 hover:bg-blue-50/40 rounded-2xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center min-h-[170px]">
+              <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="handleFileChange(event)">
               
               <div id="dropZonePrompt" class="space-y-2 pointer-events-none">
-                <div class="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center mx-auto text-indigo-500 text-lg">
+                <div class="w-12 h-12 rounded-full bg-blue-100/70 text-blue-600 flex items-center justify-center mx-auto text-xl">
                   <i class="fa-regular fa-image"></i>
                 </div>
                 <div>
-                  <span class="text-xs font-semibold text-indigo-600 hover:underline">Chạm để chọn ảnh / chụp ảnh</span>
-                  <span class="text-xs text-slate-500 hidden sm:inline"> hoặc kéo thả vào đây</span>
+                  <span class="text-xs font-bold text-blue-600 hover:underline">Chạm để chọn ảnh / Chụp ảnh</span>
+                  <span class="text-xs text-slate-500 hidden sm:inline"> hoặc kéo thả file vào đây</span>
                 </div>
                 <p class="text-[11px] text-slate-400">Hỗ trợ JPG, PNG, WEBP, HEIC từ iPhone & Android</p>
               </div>
@@ -246,7 +271,7 @@
               <!-- Xem trước ảnh -->
               <div id="previewContainer" class="hidden w-full flex flex-col items-center">
                 <div class="relative max-w-xs rounded-xl overflow-hidden shadow-md border border-slate-200">
-                  <img id="imagePreview" src="" alt="Xem trước ảnh" class="w-full h-48 object-cover">
+                  <img id="imagePreview" src="" alt="Xem trước ảnh" class="w-full max-h-48 object-contain bg-slate-100">
                   <button type="button" onclick="clearImageSelection(event)" class="absolute top-2 right-2 bg-slate-900/70 hover:bg-slate-900 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs transition">
                     <i class="fa-solid fa-xmark"></i>
                   </button>
@@ -257,16 +282,14 @@
           </div>
 
           <!-- Nút Nộp Ảnh -->
-          <button type="submit" id="submitUploadBtn" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-xl shadow-md shadow-indigo-100 transition flex items-center justify-center space-x-2 active:scale-98">
+          <button type="submit" id="submitUploadBtn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-md shadow-blue-200 transition flex items-center justify-center space-x-2 active:scale-98">
             <i class="fa-solid fa-paper-plane text-xs"></i>
-            <span>Nộp Ảnh Ngay</span>
+            <span>NỘP ẢNH NGAY</span>
           </button>
         </form>
 
         <!-- Trạng thái sau khi bấm nộp -->
-        <div id="uploadStatusBox" class="hidden mt-4 p-4 rounded-xl text-center text-xs">
-          <!-- Hiển thị loading hoặc thông báo -->
-        </div>
+        <div id="uploadStatusBox" class="hidden p-4 rounded-xl text-center text-xs"></div>
       </div>
     </div>
 
@@ -282,27 +305,27 @@
     </div>
   </footer>
 
-  <!-- MODAL 1: Đăng nhập Admin (Chỉ cần nhập Mật Khẩu) -->
+  <!-- MODAL 1: Đăng nhập Admin (Mật khẩu: 123456) -->
   <div id="loginModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-sm w-full p-6 animate-in fade-in zoom-in duration-200">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-sm w-full p-6 animate-in fade-in duration-200">
       <div class="flex items-center justify-between mb-4">
         <h3 class="font-bold text-slate-900 text-base flex items-center">
-          <i class="fa-solid fa-shield-cat mr-2 text-indigo-600"></i> Xác thực Quản trị viên
+          <i class="fa-solid fa-shield-halved mr-2 text-blue-600"></i> Đăng Nhập Quản Trị
         </h3>
         <button onclick="closeLoginModal()" class="text-slate-400 hover:text-slate-600 p-1">
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
-      <p class="text-xs text-slate-500 mb-4">Nhập mật khẩu quản trị để có quyền thêm, sửa, xóa nội dung.</p>
-      <form id="loginForm" class="space-y-4">
+      <p class="text-xs text-slate-500 mb-4">Mật khẩu thử nghiệm mặc định là: <strong class="text-slate-700">123456</strong></p>
+      <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Mật khẩu</label>
-          <input type="password" id="adminPassInput" required placeholder="Nhập mật khẩu (mặc định: 123456)" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <input type="password" id="adminPassInput" required placeholder="Nhập mật khẩu..." class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
         <p id="loginError" class="hidden text-xs text-rose-500 font-medium"></p>
         <div class="flex justify-end space-x-2 pt-2">
           <button type="button" onclick="closeLoginModal()" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-xl">Hủy</button>
-          <button type="submit" class="px-4 py-2 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-sm">Đăng nhập</button>
+          <button type="submit" class="px-4 py-2 text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-sm">Đăng nhập</button>
         </div>
       </form>
     </div>
@@ -313,79 +336,87 @@
     <div class="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-sm w-full p-6">
       <div class="flex items-center justify-between mb-4">
         <h3 class="font-bold text-slate-900 text-base flex items-center">
-          <i class="fa-solid fa-key mr-2 text-indigo-600"></i> Đổi Mật Khẩu Quản Trị
+          <i class="fa-solid fa-key mr-2 text-blue-600"></i> Đổi Mật Khẩu Quản Trị
         </h3>
         <button onclick="closeChangePassModal()" class="text-slate-400 hover:text-slate-600 p-1">
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
-      <form id="changePassForm" class="space-y-3">
+      <form onsubmit="handleChangePassSubmit(event)" class="space-y-3">
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Mật khẩu hiện tại</label>
-          <input type="password" id="oldPassInput" required class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500">
+          <input type="password" id="oldPassInput" required class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500">
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Mật khẩu mới</label>
-          <input type="password" id="newPassInput" required placeholder="Tối thiểu 4 ký tự" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500">
+          <input type="password" id="newPassInput" required placeholder="Tối thiểu 4 ký tự" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500">
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Xác nhận mật khẩu mới</label>
-          <input type="password" id="confirmPassInput" required class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500">
+          <input type="password" id="confirmPassInput" required class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500">
         </div>
         <p id="changePassError" class="hidden text-xs text-rose-500 font-medium"></p>
         <div class="flex justify-end space-x-2 pt-3">
           <button type="button" onclick="closeChangePassModal()" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-xl">Hủy</button>
-          <button type="submit" class="px-4 py-2 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-sm">Lưu mật khẩu</button>
+          <button type="submit" class="px-4 py-2 text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-sm">Lưu mật khẩu</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL 3: Thêm Hoạt Động / Liên Kết -->
+  <!-- MODAL 3: THÊM / CHỈNH SỬA LIÊN KẾT ĐÃ ĐĂNG -->
   <div id="linkModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-md w-full p-6 max-h-[90vh] overflow-y-auto custom-scrollbar">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="font-bold text-slate-900 text-base flex items-center">
-          <i class="fa-solid fa-circle-plus mr-2 text-indigo-600"></i> Thêm Liên Kết Hoạt Động
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto custom-scrollbar">
+      <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+        <h3 id="linkModalTitle" class="font-bold text-slate-900 text-base flex items-center">
+          <i class="fa-solid fa-pen-to-square mr-2 text-blue-600"></i> Thêm Liên Kết Hoạt Động
         </h3>
         <button onclick="closeLinkModal()" class="text-slate-400 hover:text-slate-600 p-1">
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
-      <form id="linkForm" class="space-y-4">
+      <form onsubmit="handleSaveLink(event)" class="space-y-4">
+        <!-- Input ID ẩn để xác định Sửa hay Thêm mới -->
+        <input type="hidden" id="editLinkId" value="">
+        
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Tiêu đề hoạt động <span class="text-rose-500">*</span></label>
-          <input type="text" id="linkTitleInput" required placeholder="Nhập tên tiêu đề..." class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <input type="text" id="linkTitleInput" required placeholder="Nhập tên tiêu đề hoạt động..." class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Mục phân loại <span class="text-rose-500">*</span></label>
-          <select id="linkCategorySelect" required class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <option value="hoctap">Học tập</option>
-            <option value="phongtrao">Phong trào</option>
-            <option value="khac">Khác</option>
-          </select>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Mục phân loại <span class="text-rose-500">*</span></label>
+            <select id="linkCategorySelect" required class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="hoctap">Học tập</option>
+              <option value="phongtrao">Phong trào</option>
+              <option value="khac">Khác</option>
+            </select>
+          </div>
+
+          <!-- Nhập hạn chót 24H -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+              Hạn chót (24 Giờ: 00:00 - 23:59)
+            </label>
+            <input type="datetime-local" id="linkDeadlineInput" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <span class="text-[10px] text-slate-400 mt-1 block">Bỏ trống nếu hoạt động không có hạn</span>
+          </div>
         </div>
 
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Đường dẫn liên kết (URL) <span class="text-rose-500">*</span></label>
-          <input type="text" id="linkUrlInput" required placeholder="https://drive.google.com/..." class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono text-xs">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Thời gian kết thúc (Hạn chót) <span class="text-rose-500">*</span></label>
-          <input type="datetime-local" id="linkDeadlineInput" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-          <p class="text-[11px] text-slate-400 mt-1">Trước giờ này sẽ có màu xanh lá, sau giờ này tự động chuyển sang màu đỏ.</p>
+          <input type="text" id="linkUrlInput" required placeholder="https://forms.gle/... hoặc link drive" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-xs">
         </div>
 
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Mô tả ngắn gọn</label>
-          <textarea id="linkDescInput" rows="2" placeholder="Ghi chú thêm về nội dung này..." class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+          <textarea id="linkDescInput" rows="2" placeholder="Ghi chú thêm về nội dung hoặc yêu cầu tham gia..." class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
         </div>
 
-        <div class="flex justify-end space-x-2 pt-2">
+        <div class="flex justify-end space-x-2 pt-2 border-t border-slate-100">
           <button type="button" onclick="closeLinkModal()" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-xl">Hủy</button>
-          <button type="submit" class="px-4 py-2 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-sm">Lưu hoạt động</button>
+          <button type="submit" id="saveLinkBtn" class="px-5 py-2 text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-sm">Lưu hoạt động</button>
         </div>
       </form>
     </div>
@@ -394,32 +425,30 @@
   <!-- MODAL 4: Cấu hình Google Database API -->
   <div id="cloudConfigModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto custom-scrollbar">
-      <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
         <h3 class="font-bold text-slate-900 text-base flex items-center">
-          <i class="fa-solid fa-database mr-2 text-indigo-600"></i> Cấu hình Google Database API
+          <i class="fa-solid fa-database mr-2 text-blue-600"></i> Cấu hình Google Database API
         </h3>
         <button onclick="closeCloudConfigModal()" class="text-slate-400 hover:text-slate-600 p-1">
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
       <div class="text-xs text-slate-600 space-y-2 mb-4 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-        <p class="font-semibold text-slate-800"><i class="fa-brands fa-google text-indigo-600 mr-1"></i> Đồng bộ dữ liệu chung giữa mọi thiết bị:</p>
-        <p>1. Mở <strong class="text-indigo-600">Google Apps Script</strong> &rarr; Tạo Database Web App.</p>
-        <p>2. Triển khai dưới dạng Web App với quyền truy cập là <strong>Bất kỳ ai (Anyone)</strong>.</p>
-        <p>3. Dán đường dẫn Web App kết thúc bằng <code class="bg-white px-1 py-0.5 rounded border text-indigo-700">/exec</code> vào ô bên dưới.</p>
+        <p class="font-semibold text-slate-800"><i class="fa-brands fa-google text-blue-600 mr-1"></i> Đồng bộ dữ liệu chung giữa mọi thiết bị:</p>
+        <p>Dán đường dẫn Web App của Google Apps Script (kết thúc bằng <code class="bg-white px-1.5 py-0.5 rounded border text-blue-700 font-mono">/exec</code>) vào ô bên dưới.</p>
       </div>
-      <form id="cloudConfigForm" class="space-y-4">
+      <form onsubmit="handleSaveCloudConfig(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Google Web App URL (Database API) <span class="text-rose-500">*</span></label>
-          <input type="url" id="googleApiUrlInput" required placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+          <input type="url" id="googleApiUrlInput" required placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
         </div>
-        <div class="flex justify-between items-center pt-2">
-          <button type="button" onclick="testCloudConnection()" id="testApiBtn" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold px-2 py-1">
+        <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+          <button type="button" onclick="testCloudConnection()" id="testApiBtn" class="text-xs text-blue-600 hover:text-blue-800 font-semibold px-2 py-1">
             <i class="fa-solid fa-wifi mr-1"></i> Thử kết nối
           </button>
           <div class="flex space-x-2">
             <button type="button" onclick="closeCloudConfigModal()" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-xl">Đóng</button>
-            <button type="submit" class="px-4 py-2 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-sm">Lưu cấu hình</button>
+            <button type="submit" class="px-4 py-2 text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-sm">Lưu cấu hình</button>
           </div>
         </div>
       </form>
@@ -435,551 +464,659 @@
   <!-- JavaScript Logic Hoàn Chỉnh -->
   <script>
     // =========================================================================
-    // CẤU HÌNH LIÊN KẾT ĐÁM MÂY CỐ ĐỊNH CHO TẤT CẢ THIẾT BỊ (MÁY TÍNH / ĐIỆN THOẠI)
-    // Nếu bạn đã có link Web App Database từ Google Apps Script, hãy dán trực tiếp
-    // vào giữa 2 dấu ngoặc kép dưới đây (để bất kỳ ai mở web cũng thấy chung dữ liệu):
+    // ĐƯỜNG LINK DATABASE API CỐ ĐỊNH CỦA BẠN
     // =========================================================================
-    const DEFAULT_GLOBAL_API_URL = "https://script.google.com/macros/s/AKfycbylan7mSVAfiF5y9eaX5CSNY18JcOhaaRt6zd8SGQ3eKxAaa3oeCelPsgbyVfcWf3AO9A/exec"; 
+    const DEFAULT_GLOBAL_API_URL = "https://script.google.com/macros/s/AKfycbylan7mSVAfiF5y9eaX5CSNY18JcOhaaRt6zd8SGQ3eKxAaa3oeCelPsgbyVfcWf3AO9A/exec";
 
-    const STORAGE_KEY_LINKS = 'portal_links_v2';
-    const STORAGE_KEY_ADMIN = 'portal_admin_session';
-    const STORAGE_KEY_PASS = 'portal_admin_pass';
-    const STORAGE_KEY_DRIVES = 'portal_drive_destinations';
-    const STORAGE_KEY_GOOGLE_API = 'portal_google_api_url';
+    // Khởi tạo dữ liệu mẫu phong phú
+    const SAMPLE_LINKS = [
+      {
+        id: "sample_1",
+        title: "Đăng ký tham gia Giải Bóng Đá Mini Đoàn Trường 2026",
+        url: "https://docs.google.com/forms",
+        category: "phongtrao",
+        desc: "Mỗi chi đoàn cử 1 đội nam và 1 đội nữ tham dự. Hạn chót đăng ký danh sách cầu thủ trước 22:00 ngày mai.",
+        deadline: new Date(Date.now() + 86400000).toISOString().slice(0, 16),
+        createdAt: Date.now()
+      },
+      {
+        id: "sample_2",
+        title: "Khảo sát ý kiến Học tập & Tài liệu ôn thi Học kỳ I",
+        url: "https://forms.google.com",
+        category: "hoctap",
+        desc: "Phiếu lấy ý kiến đóng góp của học sinh về tài liệu tham khảo và đề thi minh họa năm học mới.",
+        deadline: new Date(Date.now() + 172800000).toISOString().slice(0, 16),
+        createdAt: Date.now() - 100000
+      },
+      {
+        id: "sample_3",
+        title: "Nộp bài dự thi Cuộc thi Viết Tri Ân Thầy Cô",
+        url: "https://drive.google.com",
+        category: "khac",
+        desc: "Hoạt động đã kết thúc thời gian nhận bài dự thi trực tuyến. Ban tổ chức đang tiến hành chấm giải.",
+        deadline: new Date(Date.now() - 3600000 * 5).toISOString().slice(0, 16),
+        createdAt: Date.now() - 200000
+      }
+    ];
 
-    if (!localStorage.getItem(STORAGE_KEY_PASS)) {
-      localStorage.setItem(STORAGE_KEY_PASS, '123456');
-    }
+    const SAMPLE_DRIVES = [
+      {
+        id: "drive_sample_1",
+        name: "Minh chứng Giải Thể Thao Đoàn Trường",
+        url: DEFAULT_GLOBAL_API_URL
+      },
+      {
+        id: "drive_sample_2",
+        name: "Ảnh Hoạt Động Nghiên Cứu Khoa Học & Học Tập",
+        url: DEFAULT_GLOBAL_API_URL
+      },
+      {
+        id: "drive_sample_3",
+        name: "Nộp Ảnh Hoạt Động Tình Nguyện - Chủ Nhật Xanh",
+        url: DEFAULT_GLOBAL_API_URL
+      }
+    ];
 
-    // Ưu tiên: Lấy URL lưu trong mã nguồn trước, sau đó mới tới localStorage
-    let googleApiUrl = DEFAULT_GLOBAL_API_URL || localStorage.getItem(STORAGE_KEY_GOOGLE_API) || '';
-    let drives = JSON.parse(localStorage.getItem(STORAGE_KEY_DRIVES) || '[]');
-    let links = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKS) || '[]');
+    // Quản lý trạng thái
+    let googleApiUrl = localStorage.getItem('school_portal_api_url') || DEFAULT_GLOBAL_API_URL;
+    let isAdmin = localStorage.getItem('school_portal_is_admin') === 'true';
+    let currentAdminPass = localStorage.getItem('school_portal_admin_pass') || '123456';
+
+    let links = JSON.parse(localStorage.getItem('school_portal_links')) || SAMPLE_LINKS;
+    let drives = JSON.parse(localStorage.getItem('school_portal_drives')) || SAMPLE_DRIVES;
+
     let currentCategory = 'all';
-    let isAdmin = localStorage.getItem(STORAGE_KEY_ADMIN) === 'true';
     let selectedImageBase64 = null;
     let selectedImageMime = 'image/jpeg';
-    let selectedFileName = '';
+    let isFolderDropdownOpen = false;
 
-    // Lấy DOM Elements
-    const syncIndicator = document.getElementById('syncIndicator');
-    const openLoginBtn = document.getElementById('openLoginBtn');
-    const adminBadgeGroup = document.getElementById('adminBadgeGroup');
-    const openApiConfigBtn = document.getElementById('openApiConfigBtn');
-    const openChangePassBtn = document.getElementById('openChangePassBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const adminActionSection = document.getElementById('adminActionSection');
-    const emptyLoginBtn = document.getElementById('emptyLoginBtn');
-
-    const loginModal = document.getElementById('loginModal');
-    const loginForm = document.getElementById('loginForm');
-    const adminPassInput = document.getElementById('adminPassInput');
-    const loginError = document.getElementById('loginError');
-
-    const changePassModal = document.getElementById('changePassModal');
-    const changePassForm = document.getElementById('changePassForm');
-    const oldPassInput = document.getElementById('oldPassInput');
-    const newPassInput = document.getElementById('newPassInput');
-    const confirmPassInput = document.getElementById('confirmPassInput');
-    const changePassError = document.getElementById('changePassError');
-
-    const linkModal = document.getElementById('linkModal');
-    const linkForm = document.getElementById('linkForm');
-    const linkTitleInput = document.getElementById('linkTitleInput');
-    const linkCategorySelect = document.getElementById('linkCategorySelect');
-    const linkUrlInput = document.getElementById('linkUrlInput');
-    const linkDeadlineInput = document.getElementById('linkDeadlineInput');
-    const linkDescInput = document.getElementById('linkDescInput');
-    const openAddModalBtn = document.getElementById('openAddModalBtn');
-
-    const cloudConfigModal = document.getElementById('cloudConfigModal');
-    const cloudConfigForm = document.getElementById('cloudConfigForm');
-    const googleApiUrlInput = document.getElementById('googleApiUrlInput');
-
-    const adminFolderManagementCard = document.getElementById('adminFolderManagementCard');
-    const toggleCreateFolderBtn = document.getElementById('toggleCreateFolderBtn');
-    const createFolderForm = document.getElementById('createFolderForm');
-    const newFolderName = document.getElementById('newFolderName');
-    const newFolderUrl = document.getElementById('newFolderUrl');
-    const editingFolderId = document.getElementById('editingFolderId');
-    const cancelFolderBtn = document.getElementById('cancelFolderBtn');
-    const adminFolderList = document.getElementById('adminFolderList');
-
-    const uploadForm = document.getElementById('uploadForm');
-    const uploaderName = document.getElementById('uploaderName');
-    const driveSelect = document.getElementById('driveSelect');
-    const noDrivesNotice = document.getElementById('noDrivesNotice');
-    const dropZone = document.getElementById('dropZone');
-    const imageInput = document.getElementById('imageInput');
-    const dropZonePrompt = document.getElementById('dropZonePrompt');
-    const previewContainer = document.getElementById('previewContainer');
-    const imagePreview = document.getElementById('imagePreview');
-    const fileNameDisplay = document.getElementById('fileNameDisplay');
-    const submitUploadBtn = document.getElementById('submitUploadBtn');
-    const uploadStatusBox = document.getElementById('uploadStatusBox');
-
-    // Toast Function
-    function showToast(message) {
+    // Toast
+    function showToast(msg) {
       const toast = document.getElementById('toast');
       const toastMessage = document.getElementById('toastMessage');
       if (toast && toastMessage) {
-        toastMessage.innerText = message;
+        toastMessage.innerText = msg;
         toast.classList.remove('translate-y-16', 'opacity-0');
-        setTimeout(() => {
-          toast.classList.add('translate-y-16', 'opacity-0');
-        }, 3000);
+        setTimeout(() => toast.classList.add('translate-y-16', 'opacity-0'), 3000);
       }
     }
 
-    // Đồng bộ từ Cloud (Đảm bảo mọi thiết bị đều đọc được)
-    async function syncFromCloud() {
-      if (!googleApiUrl) {
-        if (syncIndicator) {
-          syncIndicator.innerHTML = '<i class="fa-solid fa-cloud text-[9px] mr-1"></i> Chưa nối Cloud';
-          syncIndicator.className = 'inline-flex items-center text-[10px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full font-medium border border-amber-200';
-        }
+    // Định dạng thời gian theo chuẩn 24H (HH:mm ngày dd/MM/yyyy)
+    function format24Hour(dateStr) {
+      if (!dateStr) return null;
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return null;
+
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+
+      return `${hours}:${minutes} ngày ${day}/${month}/${year}`;
+    }
+
+    // HIỂN THỊ DANH SÁCH LIÊN KẾT (KÈM NÚT CHỈNH SỬA CHO ADMIN)
+    function renderLinks() {
+      const grid = document.getElementById('linksGrid');
+      const empty = document.getElementById('emptyState');
+      if (!grid || !empty) return;
+
+      const filtered = currentCategory === 'all' ? links : links.filter(l => l.category === currentCategory);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        empty.classList.remove('hidden');
         return;
       }
 
-      if (syncIndicator) {
-        syncIndicator.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin text-[9px] mr-1"></i> Đang tải...';
-        syncIndicator.className = 'inline-flex items-center text-[10px] text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full font-semibold border border-sky-200';
+      empty.classList.add('hidden');
+      const now = new Date();
+
+      grid.innerHTML = filtered.map(item => {
+        let isExpired = false;
+        let formattedDeadline = null;
+
+        if (item.deadline) {
+          const dTime = new Date(item.deadline);
+          if (!isNaN(dTime.getTime())) {
+            isExpired = now > dTime;
+            formattedDeadline = format24Hour(item.deadline);
+          }
+        }
+
+        const statusBorderClass = isExpired ? 'border-rose-200 hover:border-rose-300' : 'border-emerald-200 hover:border-emerald-300';
+        const buttonBgClass = isExpired ? 'bg-rose-600 hover:bg-rose-700 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white';
+
+        let catName = 'Khác';
+        let catColor = 'text-slate-600 bg-slate-100 border-slate-200';
+        if (item.category === 'hoctap') {
+          catName = 'Học tập';
+          catColor = 'text-blue-600 bg-blue-50 border-blue-200';
+        } else if (item.category === 'phongtrao') {
+          catName = 'Phong trào';
+          catColor = 'text-amber-600 bg-amber-50 border-amber-200';
+        }
+
+        return `
+          <div class="bg-white rounded-2xl p-5 border ${statusBorderClass} shadow-sm hover:shadow-md transition flex flex-col justify-between relative group">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full border ${catColor}">
+                  ${catName}
+                </span>
+
+                <div class="flex items-center space-x-1">
+                  <button onclick="copyToClipboard('${escapeHtml(item.url)}')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition" title="Sao chép URL">
+                    <i class="fa-regular fa-copy text-xs"></i>
+                  </button>
+                  
+                  <!-- Nút SỬA LIÊN KẾT dành cho Admin -->
+                  ${isAdmin ? `
+                    <button onclick="openEditLinkModal('${item.id}')" class="px-2 py-1 bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 rounded-lg text-xs font-semibold flex items-center gap-1 transition" title="Chỉnh sửa liên kết này">
+                      <i class="fa-solid fa-pen-to-square text-[11px]"></i> Sửa
+                    </button>
+                    <button onclick="deleteLink('${item.id}')" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition" title="Xóa liên kết">
+                      <i class="fa-solid fa-trash text-xs"></i>
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+
+              <!-- Tiêu đề lớn dễ nhìn -->
+              <h2 class="text-lg font-bold tracking-tight text-slate-900 mb-1.5 leading-snug break-words">
+                ${escapeHtml(item.title)}
+              </h2>
+
+              <p class="text-xs text-slate-500 leading-relaxed mb-3 line-clamp-3">
+                ${escapeHtml(item.desc || 'Không có mô tả chi tiết.')}
+              </p>
+            </div>
+
+            <div>
+              <div class="mb-3.5">
+                ${formattedDeadline ? `
+                  <div class="text-[11px] font-medium px-2.5 py-1 rounded-lg border flex items-center gap-1.5 ${isExpired ? 'bg-rose-50 text-rose-700 border-rose-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'}">
+                    <i class="fa-regular fa-clock ${isExpired ? 'text-rose-500' : 'text-emerald-500'}"></i>
+                    <span>${isExpired ? 'Hết hạn lúc:' : 'Hạn chót:'} <strong>${formattedDeadline}</strong></span>
+                  </div>
+                ` : `
+                  <div class="text-[11px] font-medium text-slate-400 px-2.5 py-1 bg-slate-50 rounded-lg border border-slate-100 flex items-center gap-1.5">
+                    <i class="fa-regular fa-calendar-check"></i>
+                    <span>Hoạt động không có hạn chót</span>
+                  </div>
+                `}
+              </div>
+
+              <div class="p-2 rounded-xl bg-slate-50 border border-slate-100 flex items-center text-xs text-slate-500 font-mono mb-3">
+                <i class="fa-solid fa-link mr-1.5 text-slate-400"></i>
+                <span class="truncate">${escapeHtml(item.url)}</span>
+              </div>
+
+              <!-- Nút mở link ở giữa nổi bật -->
+              <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer" class="w-full ${buttonBgClass} font-semibold text-xs py-2.5 px-4 rounded-xl shadow-sm transition flex items-center justify-center space-x-2 active:scale-98">
+                <span>Mở Liên Kết</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // HIỂN THỊ DANH SÁCH ĐỀ MỤC LƯU TRỮ VÀ DROPDOWN 1 DÒNG
+    function renderDriveFolders() {
+      const dropdownItems = document.getElementById('folderDropdownItems');
+      const adminList = document.getElementById('adminFolderList');
+      const noDrives = document.getElementById('noDrivesNotice');
+      const currentSelectedUrl = document.getElementById('selectedFolderUrl').value;
+
+      if (!dropdownItems || !adminList) return;
+
+      dropdownItems.innerHTML = '';
+      adminList.innerHTML = '';
+
+      if (drives.length === 0) {
+        if (noDrives) noDrives.classList.remove('hidden');
+        document.getElementById('selectedFolderDisplay').innerText = '-- Chưa có đề mục lưu trữ --';
+        document.getElementById('selectedFolderSubtitle').innerText = 'Vui lòng liên hệ Quản trị viên';
+        document.getElementById('selectedFolderUrl').value = '';
+        document.getElementById('selectedFolderName').value = '';
+      } else {
+        if (noDrives) noDrives.classList.add('hidden');
+
+        // Nếu chưa chọn mục nào hoặc mục cũ bị xóa thì mặc định chọn mục đầu tiên
+        const currentFound = drives.find(d => d.url === currentSelectedUrl);
+        const activeFolder = currentFound || drives[0];
+        selectFolderItem(activeFolder.name, activeFolder.url);
+
+        // Tạo danh sách các đề mục trong popup thả xuống (Thiết kế to rõ, đẹp mắt)
+        drives.forEach((folder) => {
+          const isSelected = folder.url === activeFolder.url;
+          const itemBtn = document.createElement('button');
+          itemBtn.type = 'button';
+          itemBtn.onclick = () => {
+            selectFolderItem(folder.name, folder.url);
+            toggleFolderDropdown(false);
+          };
+          itemBtn.className = `w-full text-left p-3 rounded-xl transition flex items-center justify-between group ${isSelected ? 'bg-blue-50 border border-blue-200 text-blue-900' : 'hover:bg-slate-50 text-slate-700'}`;
+
+          itemBtn.innerHTML = `
+            <div class="flex items-center space-x-3 overflow-hidden">
+              <div class="w-9 h-9 rounded-lg ${isSelected ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 group-hover:bg-blue-100 group-hover:text-blue-600'} flex items-center justify-center shrink-0 transition">
+                <i class="fa-solid fa-folder-closed text-sm"></i>
+              </div>
+              <div class="truncate">
+                <span class="block text-xs sm:text-sm font-bold truncate leading-tight">${escapeHtml(folder.name)}</span>
+                <span class="block text-[11px] text-slate-400 truncate mt-0.5">Lưu trữ tự động vào Google Drive</span>
+              </div>
+            </div>
+            ${isSelected ? `
+              <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs shrink-0 ml-2 shadow-sm">
+                <i class="fa-solid fa-check"></i>
+              </div>
+            ` : `
+              <div class="text-slate-300 group-hover:text-slate-400 shrink-0 ml-2">
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+              </div>
+            `}
+          `;
+          dropdownItems.appendChild(itemBtn);
+        });
       }
 
-      try {
-        const fetchUrl = `${googleApiUrl}${googleApiUrl.includes('?') ? '&' : '?'}action=getData&_nocache=${Date.now()}`;
-        const response = await fetch(fetchUrl);
-        const data = await response.json();
-        
-        if (data && data.status === 'success') {
-          if (Array.isArray(data.links)) {
-            links = data.links;
-            localStorage.setItem(STORAGE_KEY_LINKS, JSON.stringify(links));
-            updateBadges();
-            renderLinks();
-          }
-          if (Array.isArray(data.drives)) {
-            drives = data.drives;
-            localStorage.setItem(STORAGE_KEY_DRIVES, JSON.stringify(drives));
-            populateDriveSelect();
-            renderAdminFolderList();
-          }
-          if (data.adminPass) {
-            localStorage.setItem(STORAGE_KEY_PASS, data.adminPass);
-          }
-          if (syncIndicator) {
-            syncIndicator.innerHTML = '<i class="fa-solid fa-cloud text-[9px] mr-1"></i> Đã đồng bộ';
-            syncIndicator.className = 'inline-flex items-center text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-semibold border border-emerald-200';
-          }
-        }
-      } catch (err) {
-        if (syncIndicator) {
-          syncIndicator.innerHTML = '<i class="fa-solid fa-circle-exclamation text-[9px] mr-1"></i> Dữ liệu cục bộ';
-          syncIndicator.className = 'inline-flex items-center text-[10px] text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full font-semibold border border-slate-300';
-        }
+      // 2. Thẻ quản lý danh sách đề mục dành riêng cho Admin
+      drives.forEach((folder) => {
+        const adminCard = document.createElement('div');
+        adminCard.className = "flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-xl hover:bg-white transition";
+        adminCard.innerHTML = `
+          <div class="truncate mr-2">
+            <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5 truncate">
+              <i class="fa-solid fa-folder text-amber-500"></i> ${escapeHtml(folder.name)}
+            </span>
+            <span class="block text-[10px] text-slate-400 font-mono truncate max-w-xs mt-0.5">${escapeHtml(folder.url)}</span>
+          </div>
+          <div class="flex items-center space-x-1 shrink-0">
+            <button onclick="openEditFolderModal('${folder.id}')" class="px-2.5 py-1 text-xs font-medium rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center gap-1 transition" title="Đổi tên đề mục">
+              <i class="fa-solid fa-pen"></i> Đổi tên
+            </button>
+            <button onclick="deleteFolder('${folder.id}')" class="px-2.5 py-1 text-xs font-medium rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 flex items-center gap-1 transition" title="Xóa đề mục">
+              <i class="fa-solid fa-trash"></i> Xóa
+            </button>
+          </div>
+        `;
+        adminList.appendChild(adminCard);
+      });
+    }
+
+    // Đóng / Mở menu thả xuống chọn đề mục
+    function toggleFolderDropdown(forceState) {
+      const menu = document.getElementById('folderDropdownMenu');
+      const arrow = document.getElementById('folderDropdownArrow');
+      if (!menu || !arrow) return;
+
+      if (typeof forceState === 'boolean') {
+        isFolderDropdownOpen = forceState;
+      } else {
+        isFolderDropdownOpen = !isFolderDropdownOpen;
+      }
+
+      if (isFolderDropdownOpen) {
+        menu.classList.remove('hidden');
+        arrow.classList.add('rotate-180');
+      } else {
+        menu.classList.add('hidden');
+        arrow.classList.remove('rotate-180');
       }
     }
 
-    // Đẩy dữ liệu lên Cloud (Dùng mode 'text/plain' để tránh lỗi CORS trên Google Script)
-    async function pushToCloud(customMsg) {
-      if (!googleApiUrl) return;
-      if (syncIndicator) {
-        syncIndicator.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket fa-bounce text-[9px] mr-1"></i> Đang lưu...';
+    // Khi người dùng bấm chọn 1 đề mục trong danh sách
+    function selectFolderItem(name, url) {
+      document.getElementById('selectedFolderDisplay').innerText = name;
+      document.getElementById('selectedFolderSubtitle').innerText = 'Đang chọn lưu vào thư mục này';
+      document.getElementById('selectedFolderUrl').value = url;
+      document.getElementById('selectedFolderName').value = name;
+    }
+
+    // Đóng dropdown khi click ra ngoài màn hình
+    document.addEventListener('click', function(e) {
+      const dropdownToggle = document.getElementById('folderDropdownToggle');
+      const dropdownMenu = document.getElementById('folderDropdownMenu');
+      if (dropdownToggle && dropdownMenu && !dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+        toggleFolderDropdown(false);
       }
+    });
 
-      try {
-        const payload = {
-          action: 'saveData',
-          links: links,
-          drives: drives,
-          adminPass: localStorage.getItem(STORAGE_KEY_PASS) || '123456'
-        };
-
-        const res = await fetch(googleApiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          },
-          body: JSON.stringify(payload)
-        });
-        
-        const resData = await res.json();
-        if (resData && resData.status === 'success') {
-          if (syncIndicator) {
-            syncIndicator.innerHTML = '<i class="fa-solid fa-cloud text-[9px] mr-1"></i> Đã đồng bộ';
-            syncIndicator.className = 'inline-flex items-center text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-semibold border border-emerald-200';
-          }
-          if (customMsg) showToast(customMsg);
+    // Đổi Danh mục & Tab
+    function switchCategory(cat) {
+      currentCategory = cat;
+      const buttons = document.querySelectorAll('.cat-btn');
+      buttons.forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.className = 'cat-btn px-4 py-2 text-sm font-semibold rounded-xl transition shadow-sm flex items-center space-x-2 bg-blue-600 text-white';
+        } else {
+          btn.className = 'cat-btn px-4 py-2 text-sm font-semibold rounded-xl transition shadow-sm flex items-center space-x-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50';
         }
-      } catch (err) {
-        console.warn('Lỗi đồng bộ lên đám mây:', err);
+      });
+
+      const linksView = document.getElementById('linksViewContainer');
+      const uploadView = document.getElementById('uploadViewContainer');
+      const adminAction = document.getElementById('adminActionSection');
+
+      if (cat === 'nopanh') {
+        if (linksView) linksView.classList.add('hidden');
+        if (uploadView) uploadView.classList.remove('hidden');
+        if (adminAction) adminAction.classList.add('hidden');
+      } else {
+        if (uploadView) uploadView.classList.add('hidden');
+        if (linksView) linksView.classList.remove('hidden');
+        if (isAdmin && adminAction) adminAction.classList.remove('hidden');
+        renderLinks();
       }
+    }
+
+    // Cập nhật giao diện Admin
+    function updateAdminUI() {
+      const openLoginBtn = document.getElementById('openLoginBtn');
+      const adminBadgeGroup = document.getElementById('adminBadgeGroup');
+      const openApiConfigBtn = document.getElementById('openApiConfigBtn');
+      const adminActionSection = document.getElementById('adminActionSection');
+      const adminFolderManagementCard = document.getElementById('adminFolderManagementCard');
+
+      if (isAdmin) {
+        if (openLoginBtn) openLoginBtn.classList.add('hidden');
+        if (adminBadgeGroup) {
+          adminBadgeGroup.classList.remove('hidden');
+          adminBadgeGroup.classList.add('flex');
+        }
+        if (openApiConfigBtn) {
+          openApiConfigBtn.classList.remove('hidden');
+          openApiConfigBtn.classList.add('flex');
+        }
+        if (currentCategory !== 'nopanh' && adminActionSection) adminActionSection.classList.remove('hidden');
+        if (adminFolderManagementCard) adminFolderManagementCard.classList.remove('hidden');
+      } else {
+        if (openLoginBtn) openLoginBtn.classList.remove('hidden');
+        if (adminBadgeGroup) {
+          adminBadgeGroup.classList.add('hidden');
+          adminBadgeGroup.classList.remove('flex');
+        }
+        if (openApiConfigBtn) {
+          openApiConfigBtn.classList.add('hidden');
+          openApiConfigBtn.classList.remove('flex');
+        }
+        if (adminActionSection) adminActionSection.classList.add('hidden');
+        if (adminFolderManagementCard) adminFolderManagementCard.classList.add('hidden');
+      }
+      renderDriveFolders();
+      renderLinks();
+    }
+
+    // Cập nhật số lượng huy hiệu danh mục
+    function updateBadges() {
+      const counts = { all: links.length, hoctap: 0, phongtrao: 0, khac: 0 };
+      links.forEach(l => { if (counts[l.category] !== undefined) counts[l.category]++; });
+
+      document.getElementById('badge-all').innerText = counts.all;
+      document.getElementById('badge-hoctap').innerText = counts.hoctap;
+      document.getElementById('badge-phongtrao').innerText = counts.phongtrao;
+      document.getElementById('badge-khac').innerText = counts.khac;
     }
 
     // Modal Admin Login
     function openLoginModal() {
-      if (adminPassInput) adminPassInput.value = '';
-      if (loginError) loginError.classList.add('hidden');
-      if (loginModal) loginModal.classList.remove('hidden');
-      setTimeout(() => { if (adminPassInput) adminPassInput.focus(); }, 100);
+      const input = document.getElementById('adminPassInput');
+      const err = document.getElementById('loginError');
+      if (input) input.value = '';
+      if (err) err.classList.add('hidden');
+      document.getElementById('loginModal').classList.remove('hidden');
     }
-
     function closeLoginModal() {
-      if (loginModal) loginModal.classList.add('hidden');
+      document.getElementById('loginModal').classList.add('hidden');
     }
-
-    if (openLoginBtn) openLoginBtn.addEventListener('click', openLoginModal);
-
-    if (loginForm) {
-      loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const storedPass = localStorage.getItem(STORAGE_KEY_PASS) || '123456';
-        const enteredPass = adminPassInput.value;
-
-        if (enteredPass !== storedPass) {
-          if (loginError) {
-            loginError.innerText = 'Mật khẩu quản trị không chính xác!';
-            loginError.classList.remove('hidden');
-          }
-          return;
-        }
-
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      const entered = document.getElementById('adminPassInput').value;
+      if (entered === currentAdminPass) {
         isAdmin = true;
-        localStorage.setItem(STORAGE_KEY_ADMIN, 'true');
+        localStorage.setItem('school_portal_is_admin', 'true');
         updateAdminUI();
-        loginForm.reset();
         closeLoginModal();
         showToast('Đăng nhập Quản trị viên thành công!');
-      });
+      } else {
+        const err = document.getElementById('loginError');
+        err.innerText = 'Mật khẩu không chính xác! (Mặc định: 123456)';
+        err.classList.remove('hidden');
+      }
     }
-
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
-        isAdmin = false;
-        localStorage.removeItem(STORAGE_KEY_ADMIN);
-        updateAdminUI();
-        showToast('Đã đăng xuất!');
-      });
+    function logoutAdmin() {
+      isAdmin = false;
+      localStorage.removeItem('school_portal_is_admin');
+      updateAdminUI();
+      showToast('Đã đăng xuất tài khoản Quản trị!');
     }
 
     // Modal Đổi Mật Khẩu
     function openChangePassModal() {
-      if (oldPassInput) oldPassInput.value = '';
-      if (newPassInput) newPassInput.value = '';
-      if (confirmPassInput) confirmPassInput.value = '';
-      if (changePassError) changePassError.classList.add('hidden');
-      if (changePassModal) changePassModal.classList.remove('hidden');
+      document.getElementById('oldPassInput').value = '';
+      document.getElementById('newPassInput').value = '';
+      document.getElementById('confirmPassInput').value = '';
+      document.getElementById('changePassError').classList.add('hidden');
+      document.getElementById('changePassModal').classList.remove('hidden');
     }
-
     function closeChangePassModal() {
-      if (changePassModal) changePassModal.classList.add('hidden');
+      document.getElementById('changePassModal').classList.add('hidden');
+    }
+    function handleChangePassSubmit(e) {
+      e.preventDefault();
+      const oldPass = document.getElementById('oldPassInput').value;
+      const newPass = document.getElementById('newPassInput').value;
+      const confirmPass = document.getElementById('confirmPassInput').value;
+      const err = document.getElementById('changePassError');
+
+      if (oldPass !== currentAdminPass) {
+        err.innerText = 'Mật khẩu hiện tại không đúng!';
+        err.classList.remove('hidden');
+        return;
+      }
+      if (newPass.length < 4) {
+        err.innerText = 'Mật khẩu mới phải từ 4 ký tự trở lên!';
+        err.classList.remove('hidden');
+        return;
+      }
+      if (newPass !== confirmPass) {
+        err.innerText = 'Xác nhận mật khẩu mới không khớp!';
+        err.classList.remove('hidden');
+        return;
+      }
+
+      currentAdminPass = newPass;
+      localStorage.setItem('school_portal_admin_pass', newPass);
+      closeChangePassModal();
+      showToast('Đổi mật khẩu thành công!');
+      pushDataToSheets();
     }
 
-    if (openChangePassBtn) openChangePassBtn.addEventListener('click', openChangePassModal);
-
-    if (changePassForm) {
-      changePassForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const currentStoredPass = localStorage.getItem(STORAGE_KEY_PASS) || '123456';
-        const oldPass = oldPassInput.value;
-        const newPass = newPassInput.value;
-        const confirmPass = confirmPassInput.value;
-
-        if (oldPass !== currentStoredPass) {
-          if (changePassError) {
-            changePassError.innerText = 'Mật khẩu hiện tại không đúng!';
-            changePassError.classList.remove('hidden');
-          }
-          return;
-        }
-
-        if (newPass.length < 4) {
-          if (changePassError) {
-            changePassError.innerText = 'Mật khẩu mới phải từ 4 ký tự trở lên!';
-            changePassError.classList.remove('hidden');
-          }
-          return;
-        }
-
-        if (newPass !== confirmPass) {
-          if (changePassError) {
-            changePassError.innerText = 'Xác nhận mật khẩu mới không khớp!';
-            changePassError.classList.remove('hidden');
-          }
-          return;
-        }
-
-        localStorage.setItem(STORAGE_KEY_PASS, newPass);
-        closeChangePassModal();
-        showToast('Đổi mật khẩu thành công!');
-        pushToCloud();
-      });
-    }
-
-    // Modal Thêm Hoạt Động
+    // MODAL THÊM / CHỈNH SỬA LIÊN KẾT HOẠT ĐỘNG
     function openLinkModal() {
-      if (linkForm) linkForm.reset();
-      const now = new Date();
-      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-      const defaultTime = now.toISOString().slice(0, 16);
-      if (linkDeadlineInput) linkDeadlineInput.value = defaultTime;
-      if (linkModal) linkModal.classList.remove('hidden');
+      document.getElementById('editLinkId').value = '';
+      document.getElementById('linkTitleInput').value = '';
+      document.getElementById('linkUrlInput').value = '';
+      document.getElementById('linkCategorySelect').value = 'hoctap';
+      document.getElementById('linkDeadlineInput').value = '';
+      document.getElementById('linkDescInput').value = '';
+      document.getElementById('linkModalTitle').innerHTML = `<i class="fa-solid fa-circle-plus mr-2 text-blue-600"></i> Thêm Liên Kết Hoạt Động`;
+      document.getElementById('saveLinkBtn').innerText = 'Lưu hoạt động';
+      document.getElementById('linkModal').classList.remove('hidden');
+    }
+
+    function openEditLinkModal(id) {
+      const item = links.find(l => l.id === id);
+      if (!item) return;
+      document.getElementById('editLinkId').value = item.id;
+      document.getElementById('linkTitleInput').value = item.title;
+      document.getElementById('linkUrlInput').value = item.url;
+      document.getElementById('linkCategorySelect').value = item.category || 'hoctap';
+      document.getElementById('linkDeadlineInput').value = item.deadline || '';
+      document.getElementById('linkDescInput').value = item.desc || '';
+      document.getElementById('linkModalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square mr-2 text-blue-600"></i> Chỉnh Sửa Hoạt Động`;
+      document.getElementById('saveLinkBtn').innerText = 'Cập nhật thay đổi';
+      document.getElementById('linkModal').classList.remove('hidden');
     }
 
     function closeLinkModal() {
-      if (linkModal) linkModal.classList.add('hidden');
+      document.getElementById('linkModal').classList.add('hidden');
     }
 
-    if (openAddModalBtn) openAddModalBtn.addEventListener('click', openLinkModal);
+    function handleSaveLink(e) {
+      e.preventDefault();
+      const id = document.getElementById('editLinkId').value;
+      const title = document.getElementById('linkTitleInput').value.trim();
+      let url = document.getElementById('linkUrlInput').value.trim();
+      if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+      const category = document.getElementById('linkCategorySelect').value;
+      const deadline = document.getElementById('linkDeadlineInput').value;
+      const desc = document.getElementById('linkDescInput').value.trim();
 
-    if (linkForm) {
-      linkForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        let url = linkUrlInput.value.trim();
-        if (!/^https?:\/\//i.test(url)) {
-          url = 'https://' + url;
+      if (id) {
+        // CẬP NHẬT LIÊN KẾT CŨ ĐÃ ĐĂNG
+        const item = links.find(l => l.id === id);
+        if (item) {
+          item.title = title;
+          item.url = url;
+          item.category = category;
+          item.deadline = deadline;
+          item.desc = desc;
         }
-
-        let deadlineVal = linkDeadlineInput.value;
-        if (!deadlineVal) {
-          const now = new Date();
-          now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-          deadlineVal = now.toISOString().slice(0, 16);
-        }
-
-        const linkId = 'link_' + Date.now();
-        const newLink = {
-          title: linkTitleInput.value.trim(),
-          url: url,
-          category: linkCategorySelect.value,
-          desc: linkDescInput.value.trim(),
-          deadline: deadlineVal,
+        showToast('Đã cập nhật hoạt động thành công!');
+      } else {
+        // THÊM MỚI
+        links.unshift({
+          id: 'link_' + Date.now(),
+          title, url, category, deadline, desc,
           createdAt: Date.now()
-        };
+        });
+        showToast('Đã thêm hoạt động mới!');
+      }
 
-        links.unshift({ id: linkId, ...newLink });
-        saveLinks();
-        closeLinkModal();
-        renderLinks();
-        showToast('Đã thêm liên kết!');
-        pushToCloud('Đã đồng bộ lên tất cả thiết bị!');
-      });
+      saveLinksLocal();
+      closeLinkModal();
+      renderLinks();
+      updateBadges();
+      pushDataToSheets();
     }
 
     function deleteLink(id) {
-      links = links.filter(l => l.id !== id);
-      saveLinks();
-      renderLinks();
-      showToast('Đã xóa liên kết!');
-      pushToCloud('Đã xóa liên kết khỏi hệ thống!');
-    }
-
-    function saveLinks() {
-      localStorage.setItem(STORAGE_KEY_LINKS, JSON.stringify(links));
-      updateBadges();
-    }
-
-    // Cấu hình Database Cloud Modal
-    function openCloudConfigModal() {
-      if (googleApiUrlInput) googleApiUrlInput.value = googleApiUrl;
-      if (cloudConfigModal) cloudConfigModal.classList.remove('hidden');
-    }
-
-    function closeCloudConfigModal() {
-      if (cloudConfigModal) cloudConfigModal.classList.add('hidden');
-    }
-
-    if (cloudConfigForm) {
-      cloudConfigForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        googleApiUrl = googleApiUrlInput.value.trim();
-        localStorage.setItem(STORAGE_KEY_GOOGLE_API, googleApiUrl);
-        closeCloudConfigModal();
-        showToast('Đã lưu cấu hình Google Database API!');
-        syncFromCloud();
-      });
-    }
-
-    async function testCloudConnection() {
-      const url = googleApiUrlInput.value.trim();
-      const testBtn = document.getElementById('testApiBtn');
-      if (!url) {
-        showToast('Vui lòng nhập URL trước khi thử nghiệm!');
-        return;
-      }
-      if (testBtn) testBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang kiểm tra...';
-      try {
-        const res = await fetch(`${url}${url.includes('?') ? '&' : '?'}action=getData&_nocache=${Date.now()}`);
-        const data = await res.json();
-        if (data && data.status === 'success') {
-          showToast('Kết nối Google API thành công rực rỡ!');
-        } else {
-          showToast('URL phản hồi nhưng chưa đúng định dạng!');
-        }
-      } catch (err) {
-        showToast('Không thể kết nối! Kiểm tra lại quyền Deploy Web App (Anyone).');
-      } finally {
-        if (testBtn) testBtn.innerHTML = '<i class="fa-solid fa-wifi mr-1"></i> Thử kết nối';
+      if (confirm("Bạn có chắc chắn muốn xóa hoạt động này?")) {
+        links = links.filter(l => l.id !== id);
+        saveLinksLocal();
+        renderLinks();
+        updateBadges();
+        showToast('Đã xóa hoạt động!');
+        pushDataToSheets();
       }
     }
 
-    // Quản lý đề mục nộp ảnh (Chỉ Admin)
-    if (toggleCreateFolderBtn) {
-      toggleCreateFolderBtn.addEventListener('click', () => {
-        if (editingFolderId) editingFolderId.value = '';
-        if (newFolderName) newFolderName.value = '';
-        if (newFolderUrl) newFolderUrl.value = '';
-        if (createFolderForm) createFolderForm.classList.toggle('hidden');
-      });
+    function saveLinksLocal() {
+      localStorage.setItem('school_portal_links', JSON.stringify(links));
     }
 
-    if (cancelFolderBtn) {
-      cancelFolderBtn.addEventListener('click', () => {
-        if (createFolderForm) createFolderForm.classList.add('hidden');
-      });
+    // Modal & Quản lý Đề mục lưu trữ
+    function openCreateFolderForm() {
+      document.getElementById('editingFolderId').value = '';
+      document.getElementById('newFolderName').value = '';
+      document.getElementById('newFolderUrl').value = '';
+      document.getElementById('createFolderForm').classList.toggle('hidden');
     }
-
-    if (createFolderForm) {
-      createFolderForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = newFolderName.value.trim();
-        const url = newFolderUrl.value.trim();
-        const editId = editingFolderId.value;
-
-        if (editId) {
-          const target = drives.find(d => d.id === editId);
-          if (target) {
-            target.name = name;
-            target.url = url;
-            showToast(`Đã đổi tên đề mục thành: "${name}"!`);
-          }
-        } else {
-          const newId = 'folder_' + Date.now();
-          drives.unshift({
-            id: newId,
-            name: name,
-            url: url,
-            createdAt: Date.now()
-          });
-          showToast(`Đã tạo đề mục: "${name}"!`);
-        }
-
-        localStorage.setItem(STORAGE_KEY_DRIVES, JSON.stringify(drives));
-        createFolderForm.reset();
-        if (editingFolderId) editingFolderId.value = '';
-        createFolderForm.classList.add('hidden');
-        renderAdminFolderList();
-        populateDriveSelect();
-        pushToCloud('Đã cập nhật đề mục lưu trữ!');
-      });
+    function closeCreateFolderForm() {
+      document.getElementById('createFolderForm').classList.add('hidden');
     }
-
-    function editFolder(id) {
+    function openEditFolderModal(id) {
       const folder = drives.find(d => d.id === id);
       if (!folder) return;
-      if (editingFolderId) editingFolderId.value = folder.id;
-      if (newFolderName) newFolderName.value = folder.name;
-      if (newFolderUrl) newFolderUrl.value = folder.url;
-      if (createFolderForm) createFolderForm.classList.remove('hidden');
-      if (newFolderName) newFolderName.focus();
+      document.getElementById('editingFolderId').value = folder.id;
+      document.getElementById('newFolderName').value = folder.name;
+      document.getElementById('newFolderUrl').value = folder.url;
+      document.getElementById('createFolderForm').classList.remove('hidden');
+      document.getElementById('newFolderName').focus();
     }
+    function handleSaveFolder(e) {
+      e.preventDefault();
+      const id = document.getElementById('editingFolderId').value;
+      const name = document.getElementById('newFolderName').value.trim();
+      const url = document.getElementById('newFolderUrl').value.trim();
 
+      if (id) {
+        const folder = drives.find(d => d.id === id);
+        if (folder) {
+          folder.name = name;
+          folder.url = url;
+          showToast(`Đã đổi tên đề mục thành: "${name}"!`);
+        }
+      } else {
+        drives.unshift({
+          id: 'folder_' + Date.now(),
+          name, url
+        });
+        showToast(`Đã tạo đề mục mới: "${name}"!`);
+      }
+
+      localStorage.setItem('school_portal_drives', JSON.stringify(drives));
+      closeCreateFolderForm();
+      renderDriveFolders();
+      pushDataToSheets();
+    }
     function deleteFolder(id) {
-      drives = drives.filter(d => d.id !== id);
-      localStorage.setItem(STORAGE_KEY_DRIVES, JSON.stringify(drives));
-      renderAdminFolderList();
-      populateDriveSelect();
-      showToast('Đã xóa đề mục lưu trữ!');
-      pushToCloud('Đã xóa đề mục trên Google!');
+      if (confirm("Bạn có chắc chắn muốn xóa đề mục lưu trữ này?")) {
+        drives = drives.filter(d => d.id !== id);
+        localStorage.setItem('school_portal_drives', JSON.stringify(drives));
+        renderDriveFolders();
+        showToast('Đã xóa đề mục lưu trữ!');
+        pushDataToSheets();
+      }
     }
 
-    function renderAdminFolderList() {
-      if (!adminFolderList) return;
-      if (drives.length === 0) {
-        adminFolderList.innerHTML = `
-          <div class="text-xs text-slate-400 italic py-2">Chưa có đề mục lưu trữ nào. Hãy bấm "Tạo đề mục mới".</div>
-        `;
+    // Kéo thả & Chọn ảnh (Hỗ trợ máy tính, Android, iOS Safari)
+    function triggerFileInput() {
+      const input = document.getElementById('imageInput');
+      input.value = '';
+      input.click();
+    }
+    function handleFileChange(e) {
+      const file = e.target.files[0];
+      if (file) processSelectedImage(file);
+    }
+    function setupDragAndDrop() {
+      const dropZone = document.getElementById('dropZone');
+      ['dragenter', 'dragover'].forEach(name => {
+        dropZone.addEventListener(name, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.add('border-blue-500', 'bg-blue-50/70');
+        });
+      });
+      ['dragleave', 'drop'].forEach(name => {
+        dropZone.addEventListener(name, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.remove('border-blue-500', 'bg-blue-50/70');
+        });
+      });
+      dropZone.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files && files.length > 0) processSelectedImage(files[0]);
+      });
+    }
+
+    function processSelectedImage(file) {
+      if (!file.type.startsWith('image/')) {
+        alert("Vui lòng chỉ chọn tệp hình ảnh!");
         return;
       }
-
-      adminFolderList.innerHTML = drives.map(folder => `
-        <div class="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl">
-          <div class="truncate mr-2">
-            <span class="text-xs font-bold text-slate-800">${escapeHtml(folder.name)}</span>
-            <span class="block text-[10px] text-slate-400 font-mono truncate max-w-xs">${escapeHtml(folder.url)}</span>
-          </div>
-          <div class="flex items-center space-x-1 shrink-0">
-            <button onclick="editFolder('${folder.id}')" class="p-1.5 text-slate-500 hover:text-indigo-600 rounded-lg hover:bg-slate-200 transition" title="Đổi tên / Chỉnh sửa">
-              <i class="fa-solid fa-pen-to-square text-xs"></i>
-            </button>
-            <button onclick="deleteFolder('${folder.id}')" class="p-1.5 text-slate-500 hover:text-rose-600 rounded-lg hover:bg-slate-200 transition" title="Xóa đề mục">
-              <i class="fa-solid fa-trash-can text-xs"></i>
-            </button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function populateDriveSelect() {
-      if (!driveSelect) return;
-      driveSelect.innerHTML = '<option value="">-- Vui lòng chọn đề mục cần nộp --</option>';
-      if (drives.length === 0) {
-        if (noDrivesNotice) noDrivesNotice.classList.remove('hidden');
-      } else {
-        if (noDrivesNotice) noDrivesNotice.classList.add('hidden');
-        drives.forEach(d => {
-          const opt = document.createElement('option');
-          opt.value = d.id;
-          opt.textContent = d.name;
-          driveSelect.appendChild(opt);
-        });
-      }
-    }
-
-    // Xử lý nộp ảnh trên Mobile & Desktop
-    function triggerFileInput() {
-      if (imageInput) imageInput.click();
-    }
-
-    if (imageInput) {
-      imageInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) handleSelectedImage(file);
-      });
-    }
-
-    if (dropZone) {
-      ['dragenter', 'dragover'].forEach(eventName => {
-        dropZone.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          dropZone.classList.add('border-indigo-500', 'bg-indigo-50/50');
-        });
-      });
-
-      ['dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          dropZone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
-        });
-      });
-
-      dropZone.addEventListener('drop', (e) => {
-        const dt = e.dataTransfer;
-        const file = dt.files[0];
-        if (file && file.type.startsWith('image/')) {
-          handleSelectedImage(file);
-        }
-      });
-    }
-
-    function handleSelectedImage(file) {
-      selectedFileName = file.name;
       selectedImageMime = file.type || 'image/jpeg';
 
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function(evt) {
         const img = new Image();
         img.onload = function() {
           const canvas = document.createElement('canvas');
@@ -1004,12 +1141,12 @@
 
           selectedImageBase64 = canvas.toDataURL(selectedImageMime, 0.85);
 
-          if (imagePreview) imagePreview.src = selectedImageBase64;
-          if (fileNameDisplay) fileNameDisplay.innerText = `${file.name} (~${Math.round(selectedImageBase64.length * 0.75 / 1024)} KB)`;
-          if (dropZonePrompt) dropZonePrompt.classList.add('hidden');
-          if (previewContainer) previewContainer.classList.remove('hidden');
+          document.getElementById('imagePreview').src = selectedImageBase64;
+          document.getElementById('fileNameDisplay').innerText = `${file.name} (~${Math.round(selectedImageBase64.length * 0.75 / 1024)} KB)`;
+          document.getElementById('dropZonePrompt').classList.add('hidden');
+          document.getElementById('previewContainer').classList.remove('hidden');
         };
-        img.src = e.target.result;
+        img.src = evt.target.result;
       };
       reader.readAsDataURL(file);
     }
@@ -1017,255 +1154,171 @@
     function clearImageSelection(e) {
       if (e) e.stopPropagation();
       selectedImageBase64 = null;
-      if (imageInput) imageInput.value = '';
-      if (dropZonePrompt) dropZonePrompt.classList.remove('hidden');
-      if (previewContainer) previewContainer.classList.add('hidden');
+      document.getElementById('imageInput').value = '';
+      document.getElementById('dropZonePrompt').classList.remove('hidden');
+      document.getElementById('previewContainer').classList.add('hidden');
     }
 
-    // Submit Upload Ảnh
-    if (uploadForm) {
-      uploadForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const name = uploaderName.value.trim();
-        const selectedDriveId = driveSelect.value;
+    // Submit Nộp ảnh
+    async function handleUploadSubmit(e) {
+      e.preventDefault();
+      const uploaderName = document.getElementById('uploaderName').value.trim();
+      const targetScriptUrl = document.getElementById('selectedFolderUrl').value;
+      const folderName = document.getElementById('selectedFolderName').value || 'Google Drive';
+      const submitBtn = document.getElementById('submitUploadBtn');
+      const statusBox = document.getElementById('uploadStatusBox');
 
-        if (!selectedDriveId) {
-          showToast('Vui lòng chọn đề mục lưu trữ!');
-          return;
-        }
-
-        const targetDrive = drives.find(d => d.id === selectedDriveId);
-        if (!targetDrive || !targetDrive.url) {
-          showToast('Đề mục này chưa được cấu hình đường dẫn Google Apps Script!');
-          return;
-        }
-
-        if (!selectedImageBase64) {
-          showToast('Vui lòng chọn hoặc chụp một tấm ảnh!');
-          return;
-        }
-
-        if (submitUploadBtn) {
-          submitUploadBtn.disabled = true;
-          submitUploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i><span>Đang nén và gửi lên Google Drive...</span>';
-        }
-
-        if (uploadStatusBox) {
-          uploadStatusBox.className = 'mt-4 p-4 rounded-xl text-center text-xs bg-sky-50 text-sky-800 border border-sky-200 block';
-          uploadStatusBox.innerHTML = '<i class="fa-solid fa-cloud-arrow-up fa-bounce mr-2"></i> Đang tải dữ liệu lên thư mục Google Drive: <strong>' + escapeHtml(targetDrive.name) + '</strong>...';
-        }
-
-        try {
-          const payload = {
-            base64: selectedImageBase64,
-            fileName: `${name.replace(/\s+/g, '_')}_${Date.now()}.jpg`,
-            mimeType: selectedImageMime,
-            uploader: name,
-            categoryName: targetDrive.name
-          };
-
-          const res = await fetch(targetDrive.url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'text/plain;charset=utf-8'
-            },
-            body: JSON.stringify(payload)
-          });
-          const result = await res.json();
-
-          if (result && result.status === 'success') {
-            uploadStatusBox.className = 'mt-4 p-4 rounded-xl text-center text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 block';
-            uploadStatusBox.innerHTML = `
-              <p class="font-bold text-sm text-emerald-700 mb-1"><i class="fa-solid fa-circle-check mr-1"></i> Nộp ảnh thành công!</p>
-              <p>Ảnh của <strong>${escapeHtml(name)}</strong> đã được lưu trữ an toàn vào đề mục <strong>${escapeHtml(targetDrive.name)}</strong>.</p>
-            `;
-            uploadForm.reset();
-            clearImageSelection();
-          } else {
-            throw new Error((result && result.message) || 'Lỗi xử lý tải lên Google');
-          }
-        } catch (err) {
-          uploadStatusBox.className = 'mt-4 p-4 rounded-xl text-center text-xs bg-rose-50 text-rose-800 border border-rose-200 block';
-          uploadStatusBox.innerHTML = `
-            <p class="font-bold mb-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Không thể gửi ảnh lên Drive!</p>
-            <p class="text-[11px]">${escapeHtml(err.message || 'Lỗi mạng hoặc cấu hình URL Google Script chưa mở quyền Anyone.')}</p>
-          `;
-        } finally {
-          if (submitUploadBtn) {
-            submitUploadBtn.disabled = false;
-            submitUploadBtn.innerHTML = '<i class="fa-solid fa-paper-plane text-xs"></i><span>Nộp Ảnh Ngay</span>';
-          }
-        }
-      });
-    }
-
-    // Chuyển Category
-    function switchCategory(cat) {
-      currentCategory = cat;
-      const buttons = document.querySelectorAll('.cat-btn');
-      buttons.forEach(btn => {
-        if (btn.dataset.cat === cat) {
-          btn.className = 'cat-btn px-4 py-2 text-sm font-semibold rounded-xl transition shadow-sm flex items-center space-x-2 bg-indigo-600 text-white';
-        } else {
-          btn.className = 'cat-btn px-4 py-2 text-sm font-semibold rounded-xl transition shadow-sm flex items-center space-x-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50';
-        }
-      });
-
-      const linksView = document.getElementById('linksViewContainer');
-      const uploadView = document.getElementById('uploadViewContainer');
-
-      if (cat === 'nopanh') {
-        if (linksView) linksView.classList.add('hidden');
-        if (uploadView) uploadView.classList.remove('hidden');
-        if (adminActionSection) adminActionSection.classList.add('hidden');
-      } else {
-        if (uploadView) uploadView.classList.add('hidden');
-        if (linksView) linksView.classList.remove('hidden');
-        if (isAdmin && adminActionSection) adminActionSection.classList.remove('hidden');
-        renderLinks();
+      if (!uploaderName) {
+        alert("Vui lòng nhập họ và tên người nộp!");
+        return;
       }
-    }
-
-    // Cập nhật giao diện Admin
-    function updateAdminUI() {
-      if (isAdmin) {
-        if (openLoginBtn) openLoginBtn.classList.add('hidden');
-        if (adminBadgeGroup) adminBadgeGroup.classList.remove('hidden');
-        if (openApiConfigBtn) openApiConfigBtn.classList.remove('hidden');
-        if (emptyLoginBtn) emptyLoginBtn.classList.add('hidden');
-        if (currentCategory !== 'nopanh' && adminActionSection) adminActionSection.classList.remove('hidden');
-        if (adminFolderManagementCard) adminFolderManagementCard.classList.remove('hidden');
-      } else {
-        if (openLoginBtn) openLoginBtn.classList.remove('hidden');
-        if (adminBadgeGroup) adminBadgeGroup.classList.add('hidden');
-        if (openApiConfigBtn) openApiConfigBtn.classList.add('hidden');
-        if (emptyLoginBtn) emptyLoginBtn.classList.remove('hidden');
-        if (adminActionSection) adminActionSection.classList.add('hidden');
-        if (adminFolderManagementCard) adminFolderManagementCard.classList.add('hidden');
+      if (!targetScriptUrl) {
+        alert("Vui lòng chọn 1 đề mục lưu trữ!");
+        return;
       }
-      renderAdminFolderList();
-      renderLinks();
-    }
-
-    // Đếm số lượng badge
-    function updateBadges() {
-      const counts = { all: links.length, hoctap: 0, phongtrao: 0, khac: 0 };
-      links.forEach(l => { if (counts[l.category] !== undefined) counts[l.category]++; });
-
-      const badgeAll = document.getElementById('badge-all');
-      const badgeHocTap = document.getElementById('badge-hoctap');
-      const badgePhongTrao = document.getElementById('badge-phongtrao');
-      const badgeKhac = document.getElementById('badge-khac');
-
-      if (badgeAll) badgeAll.innerText = counts.all;
-      if (badgeHocTap) badgeHocTap.innerText = counts.hoctap;
-      if (badgePhongTrao) badgePhongTrao.innerText = counts.phongtrao;
-      if (badgeKhac) badgeKhac.innerText = counts.khac;
-    }
-
-    // Render danh sách link
-    function renderLinks() {
-      const grid = document.getElementById('linksGrid');
-      const empty = document.getElementById('emptyState');
-      if (!grid || !empty) return;
-
-      const filtered = currentCategory === 'all' ? links : links.filter(l => l.category === currentCategory);
-
-      if (filtered.length === 0) {
-        grid.innerHTML = '';
-        empty.classList.remove('hidden');
+      if (!selectedImageBase64) {
+        alert("Vui lòng chọn hoặc chụp ảnh cần nộp!");
         return;
       }
 
-      empty.classList.add('hidden');
-      const now = new Date();
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Đang nén và gửi ảnh...</span>';
+      statusBox.classList.remove('hidden');
+      statusBox.className = 'p-3.5 rounded-xl text-xs font-medium border bg-blue-50 text-blue-800 border-blue-200 block';
+      statusBox.innerHTML = `<i class="fa-solid fa-cloud-arrow-up fa-bounce mr-2"></i> Đang chuyển ảnh tới đề mục <strong>${escapeHtml(folderName)}</strong>... Vui lòng không đóng trang.`;
 
-      grid.innerHTML = filtered.map(item => {
-        const deadline = item.deadline ? new Date(item.deadline) : null;
-        const isExpired = deadline && (now > deadline);
+      try {
+        const payload = {
+          base64: selectedImageBase64,
+          fileName: `${uploaderName.replace(/\s+/g, '_')}_${Date.now()}.jpg`,
+          mimeType: selectedImageMime,
+          uploader: uploaderName,
+          categoryName: folderName
+        };
 
-        let statusBorderClass = isExpired ? 'border-rose-200 hover:border-rose-300' : 'border-emerald-200 hover:border-emerald-300';
-        let statusBadge = '';
-        let buttonBgClass = isExpired ? 'bg-rose-600 hover:bg-rose-700 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white';
+        const res = await fetch(targetScriptUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
 
-        if (deadline) {
-          const formattedDate = deadline.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ' - ' + deadline.toLocaleDateString('vi-VN');
-          if (isExpired) {
-            statusBadge = `
-              <span class="inline-flex items-center text-[11px] font-semibold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
-                <i class="fa-solid fa-clock-rotate-left mr-1"></i> Hết hạn: ${formattedDate}
-              </span>
-            `;
-          } else {
-            statusBadge = `
-              <span class="inline-flex items-center text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                <i class="fa-regular fa-clock mr-1"></i> Còn hạn: ${formattedDate}
-              </span>
-            `;
-          }
+        if (result && result.status === 'success') {
+          statusBox.className = 'p-3.5 rounded-xl text-xs font-medium border bg-emerald-50 text-emerald-800 border-emerald-200 block';
+          statusBox.innerHTML = `
+            <p class="font-bold text-sm text-emerald-700 mb-1"><i class="fa-solid fa-circle-check mr-1"></i> Nộp ảnh thành công!</p>
+            <p>Ảnh của <strong>${escapeHtml(uploaderName)}</strong> đã được lưu trữ an toàn vào đề mục <strong>${escapeHtml(folderName)}</strong>.</p>
+          `;
+          document.getElementById('uploaderName').value = '';
+          clearImageSelection();
+        } else {
+          throw new Error((result && result.message) || 'Lỗi gửi ảnh');
         }
-
-        let catName = 'Khác';
-        let catColor = 'text-slate-600 bg-slate-100';
-        if (item.category === 'hoctap') {
-          catName = 'Học tập';
-          catColor = 'text-indigo-600 bg-indigo-50 border border-indigo-100';
-        } else if (item.category === 'phongtrao') {
-          catName = 'Phong trào';
-          catColor = 'text-amber-600 bg-amber-50 border border-amber-100';
-        }
-
-        return `
-          <div class="bg-white rounded-2xl p-5 border ${statusBorderClass} shadow-sm hover:shadow-md transition flex flex-col justify-between relative group">
-            <div>
-              <div class="flex items-center justify-between gap-2 mb-2">
-                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full ${catColor}">
-                  ${catName}
-                </span>
-                
-                <div class="flex items-center space-x-1">
-                  <button onclick="copyToClipboard('${escapeHtml(item.url)}')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition" title="Sao chép URL">
-                    <i class="fa-regular fa-copy text-xs"></i>
-                  </button>
-                  ${isAdmin ? `
-                    <button onclick="deleteLink('${item.id}')" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition" title="Xóa">
-                      <i class="fa-regular fa-trash-can text-xs"></i>
-                    </button>
-                  ` : ''}
-                </div>
-              </div>
-
-              <!-- Tiêu đề lớn -->
-              <h2 class="text-xl font-bold tracking-tight text-slate-900 mb-1 leading-snug break-words">
-                ${escapeHtml(item.title)}
-              </h2>
-
-              <p class="text-sm text-slate-500 leading-relaxed mb-3 line-clamp-3">
-                ${escapeHtml(item.desc || 'Không có mô tả chi tiết.')}
-              </p>
-            </div>
-
-            <div>
-              <div class="mb-4">
-                ${statusBadge}
-              </div>
-
-              <div class="p-2 rounded-xl bg-slate-50 border border-slate-100 flex items-center text-xs text-slate-500 font-mono mb-3">
-                <i class="fa-solid fa-link mr-1.5 text-slate-400"></i>
-                <span class="truncate">${escapeHtml(item.url)}</span>
-              </div>
-
-              <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer" class="w-full ${buttonBgClass} font-semibold text-sm py-2.5 px-4 rounded-xl shadow-sm transition flex items-center justify-center space-x-2 active:scale-98">
-                <span>Mở link</span>
-                <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-              </a>
-            </div>
-          </div>
+      } catch (err) {
+        statusBox.className = 'p-3.5 rounded-xl text-xs font-medium border bg-rose-50 text-rose-800 border-rose-200 block';
+        statusBox.innerHTML = `
+          <p class="font-bold mb-1"><i class="fa-solid fa-circle-exclamation mr-1"></i> Chưa gửi được ảnh!</p>
+          <p class="text-[11px]">${escapeHtml(err.message || 'Kiểm tra lại đường dẫn Script của đề mục hoặc quyền Anyone trên Google Apps Script.')}</p>
         `;
-      }).join('');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane text-xs"></i> <span>NỘP ẢNH NGAY</span>';
+      }
     }
 
-    // Helper Copy & Escape
+    // Modal Cấu hình Database
+    function openCloudConfigModal() {
+      document.getElementById('googleApiUrlInput').value = googleApiUrl;
+      document.getElementById('cloudConfigModal').classList.remove('hidden');
+    }
+    function closeCloudConfigModal() {
+      document.getElementById('cloudConfigModal').classList.add('hidden');
+    }
+    function handleSaveCloudConfig(e) {
+      e.preventDefault();
+      googleApiUrl = document.getElementById('googleApiUrlInput').value.trim();
+      localStorage.setItem('school_portal_api_url', googleApiUrl);
+      closeCloudConfigModal();
+      showToast('Đã lưu cấu hình Google Database!');
+      fetchDataFromSheets();
+    }
+    async function testCloudConnection() {
+      const url = document.getElementById('googleApiUrlInput').value.trim();
+      const testBtn = document.getElementById('testApiBtn');
+      if (!url) {
+        showToast('Vui lòng nhập URL trước!');
+        return;
+      }
+      testBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang thử...';
+      try {
+        const res = await fetch(`${url}${url.includes('?') ? '&' : '?'}action=getData&_nocache=${Date.now()}`);
+        const data = await res.json();
+        if (data && data.status === 'success') {
+          showToast('Kết nối Google API thành công rực rỡ!');
+        } else {
+          showToast('URL phản hồi nhưng chưa đúng cấu trúc!');
+        }
+      } catch (err) {
+        showToast('Không kết nối được! Hãy kiểm tra lại link Web App.');
+      } finally {
+        testBtn.innerHTML = '<i class="fa-solid fa-wifi mr-1"></i> Thử kết nối';
+      }
+    }
+
+    // Đồng bộ từ Sheets
+    async function fetchDataFromSheets() {
+      const sync = document.getElementById('syncIndicator');
+      if (!googleApiUrl) return;
+
+      try {
+        const res = await fetch(`${googleApiUrl}${googleApiUrl.includes('?') ? '&' : '?'}action=getData&_nocache=${Date.now()}`);
+        const data = await res.json();
+        if (data && data.status === 'success') {
+          if (Array.isArray(data.links) && data.links.length > 0) {
+            links = data.links;
+            saveLinksLocal();
+          }
+          if (Array.isArray(data.drives) && data.drives.length > 0) {
+            drives = data.drives;
+            localStorage.setItem('school_portal_drives', JSON.stringify(drives));
+          }
+          if (data.adminPass) {
+            currentAdminPass = data.adminPass;
+            localStorage.setItem('school_portal_admin_pass', data.adminPass);
+          }
+          renderLinks();
+          renderDriveFolders();
+          updateBadges();
+          if (sync) {
+            sync.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse"></span> Đã đồng bộ Sheets';
+          }
+        }
+      } catch (err) {
+        console.warn('Đang dùng dữ liệu cục bộ:', err);
+      }
+    }
+
+    // Đẩy lên Sheets
+    async function pushDataToSheets() {
+      if (!googleApiUrl) return;
+      try {
+        const payload = {
+          action: 'saveData',
+          links: links,
+          drives: drives,
+          adminPass: currentAdminPass
+        };
+        await fetch(googleApiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+      } catch (err) {
+        console.warn('Lỗi gửi Sheets:', err);
+      }
+    }
+
+    // Helpers
     function copyToClipboard(text) {
       const temp = document.createElement('input');
       temp.value = text;
@@ -1286,16 +1339,14 @@
         .replace(/'/g, '&#039;');
     }
 
-    // Tự động kiểm tra đồng bộ & thời hạn
-    setInterval(syncFromCloud, 10000);
-    setInterval(renderLinks, 60000);
-
-    // Khởi chạy khi nạp trang
+    // Khởi chạy khi load trang
     window.addEventListener('DOMContentLoaded', () => {
       updateAdminUI();
       updateBadges();
-      populateDriveSelect();
-      syncFromCloud();
+      renderDriveFolders();
+      renderLinks();
+      setupDragAndDrop();
+      fetchDataFromSheets();
     });
   </script>
 </body>
